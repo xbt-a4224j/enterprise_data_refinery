@@ -1,5 +1,6 @@
-SALEM COUNTY PERMIT RECORD
+PERMIT RECORD
 Permit ID: BP-2026-04370
+Jurisdiction: Salem
 Address: 80 Maple St, Salem
 Permit Type: Residential Solar
 Current Status: Issued

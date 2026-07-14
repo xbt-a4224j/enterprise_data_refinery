@@ -1,5 +1,6 @@
-CITY OF SPRINGFIELD - BUILDING PERMIT
+BUILDING PERMIT
 Permit No: BP-2026-04444
+Jurisdiction: Springfield
 Site Address: 94 Birch St, Springfield
 Type: Electrical
 Status: Finaled

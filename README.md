@@ -33,6 +33,35 @@ flowchart LR
 
 Rich diagrams: [`docs/architecture.html`](docs/architecture.html).
 
+## Evaluation
+
+Reproducible numbers from `eval/run_eval.py` over a labeled dataset of **24 building-permit
+documents in three formats**. Extraction ran on **Claude Haiku 4.5**; the trust-gate evaluation
+is deterministic (no model). Regenerate any time with `uv run python eval/run_eval.py`.
+
+| Metric | Result |
+|---|---|
+| Field-level extraction accuracy | **100%** — 168/168 fields exact-match across 24 docs |
+| Gate — clean data published | **6 / 6** |
+| Gate — defective drops caught | **5 / 5** — missing id, negative value, high null-rate, schema violation, row-count spike |
+| Parallel speedup | **3.9×** — 5.9s → 1.5s on 6 documents |
+| Cost per 1,000 docs | **$0** local · $1.10 Haiku · $3.30 Sonnet · $5.50 Opus |
+
+<table>
+<tr>
+<td width="50%"><img src="docs/assets/eval/accuracy.svg" alt="Extraction accuracy by field" width="100%"></td>
+<td width="50%"><img src="docs/assets/eval/gate.svg" alt="Trust gate: clean vs defective drops" width="100%"></td>
+</tr>
+<tr>
+<td width="50%"><img src="docs/assets/eval/cost.svg" alt="Cost per 1,000 documents by backend" width="100%"></td>
+<td width="50%"><img src="docs/assets/eval/throughput.svg" alt="Sequential vs parallel throughput" width="100%"></td>
+</tr>
+</table>
+
+The dataset is synthetic-but-labeled ([`eval/`](eval/)), so accuracy reflects clean, well-formed
+inputs — the trust layer exists precisely for when real-world inputs *aren't* (see the live SF/NYC
+open-data quarantines). Swap the backend with `EDR_LLM_PROVIDER` / `EDR_ANTHROPIC_MODEL`.
+
 ## Run it
 
 Everything is local Docker with a local model (Ollama). No paid API required.

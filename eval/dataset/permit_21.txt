@@ -1,5 +1,6 @@
-CITY OF BRISTOL - BUILDING PERMIT
+BUILDING PERMIT
 Permit No: BP-2026-04777
+Jurisdiction: Bristol
 Site Address: 157 Oak St, Bristol
 Type: Plumbing
 Status: Under Review

@@ -1,5 +1,6 @@
-SALEM COUNTY PERMIT RECORD
+PERMIT RECORD
 Permit ID: BP-2026-04814
+Jurisdiction: Salem
 Address: 164 Birch St, Salem
 Permit Type: Roofing
 Current Status: Finaled

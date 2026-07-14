@@ -1,6 +1,7 @@
-DELAWARE COUNTY COUNTY PERMIT RECORD
+PERMIT RECORD
 Permit ID: BP-2026-04037
-Address: 17 Oak St, Delaware County
+Jurisdiction: Fairview
+Address: 17 Oak St, Fairview
 Permit Type: Commercial New Construction
 Current Status: Under Review
 Issued: 2026-02-04

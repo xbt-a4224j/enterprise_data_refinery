@@ -1,5 +1,6 @@
-CITY OF BRISTOL - BUILDING PERMIT
+BUILDING PERMIT
 Permit No: BP-2026-04333
+Jurisdiction: Bristol
 Site Address: 73 Elm St, Bristol
 Type: Commercial New Construction
 Status: Approved

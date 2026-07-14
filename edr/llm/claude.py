@@ -4,12 +4,32 @@ Same interface as the local provider, so swapping is a one-line config change.""
 from __future__ import annotations
 
 import json
+import re
 
 import httpx
 
 from edr.llm.base import LLMResult
 
 API_URL = "https://api.anthropic.com/v1/messages"
+
+
+def _parse_json(text: str) -> dict:
+    """Robustly extract a JSON object — Claude often wraps it in ```json fences or prose."""
+    text = text.strip()
+    fenced = re.search(r"```(?:json)?\s*(.*?)```", text, re.S)
+    if fenced:
+        text = fenced.group(1).strip()
+    try:
+        obj = json.loads(text)
+    except json.JSONDecodeError:
+        block = re.search(r"\{.*\}", text, re.S)
+        if not block:
+            return {}
+        try:
+            obj = json.loads(block.group(0))
+        except json.JSONDecodeError:
+            return {}
+    return obj if isinstance(obj, dict) else {"value": obj}
 
 
 class ClaudeProvider:
@@ -26,8 +46,8 @@ class ClaudeProvider:
 
     def extract(self, *, instructions: str, schema: dict, content: str) -> LLMResult:
         prompt = (
-            f"{instructions}\n\nReturn ONLY JSON matching this schema:\n{json.dumps(schema)}"
-            f"\n\nDOCUMENT:\n{content}"
+            f"{instructions}\n\nReturn raw JSON only — no markdown, no code fences, no prose. "
+            f"Match this schema:\n{json.dumps(schema)}\n\nDOCUMENT:\n{content}"
         )
         resp = self._client.post(
             API_URL,
@@ -45,13 +65,10 @@ class ClaudeProvider:
         resp.raise_for_status()
         body = resp.json()
         text = "".join(b.get("text", "") for b in body.get("content", []))
-        try:
-            data = json.loads(text)
-        except json.JSONDecodeError:
-            data = {}
+        data = _parse_json(text)
         usage = body.get("usage", {})
         return LLMResult(
-            data=data if isinstance(data, dict) else {"value": data},
+            data=data,
             tokens_in=usage.get("input_tokens", 0),
             tokens_out=usage.get("output_tokens", 0),
             provider="claude",

@@ -2,6 +2,7 @@
 
 from functools import lru_cache
 
+from pydantic import AliasChoices, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -17,7 +18,10 @@ class Settings(BaseSettings):
     llm_provider: str = "fake"  # ollama | claude | fake
     ollama_host: str = "http://localhost:11434"
     ollama_model: str = "qwen2.5:7b"
-    anthropic_api_key: str = ""
+    # Accepts EDR_ANTHROPIC_API_KEY or the standard ANTHROPIC_API_KEY.
+    anthropic_api_key: str = Field(
+        "", validation_alias=AliasChoices("EDR_ANTHROPIC_API_KEY", "ANTHROPIC_API_KEY")
+    )
     anthropic_model: str = "claude-haiku-4-5"  # fast + cheap for extraction; or claude-sonnet-5
 
     # App

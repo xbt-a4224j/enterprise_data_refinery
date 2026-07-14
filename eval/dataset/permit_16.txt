@@ -1,5 +1,6 @@
-MEDIA COUNTY PERMIT RECORD
+PERMIT RECORD
 Permit ID: BP-2026-04592
+Jurisdiction: Media
 Address: 122 Oak St, Media
 Permit Type: Residential Alteration
 Current Status: Under Review

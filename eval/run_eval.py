@@ -132,6 +132,15 @@ def costs(avg_in, avg_out):
     return out
 
 
+def _who(results):
+    nice = {"claude-haiku-4-5": "Claude Haiku 4.5", "claude-sonnet-5": "Claude Sonnet 5",
+            "claude-opus-4-8": "Claude Opus 4.8"}
+    m = results.get("model", "")
+    if results["provider"] == "ollama":
+        return f"local {m}"
+    return nice.get(m, m or results["provider"])
+
+
 def render(results):
     ASSETS.mkdir(parents=True, exist_ok=True)
     a = results["accuracy"]
@@ -139,7 +148,7 @@ def render(results):
     items.append(("OVERALL", round(a["overall"], 1)))
     (ASSETS / "accuracy.svg").write_text(hbar_chart(
         "Extraction accuracy by field", items, unit="%", max_value=100,
-        subtitle=f"local qwen2.5:7b · {a['n']} labeled permit documents · exact-match"))
+        subtitle=f"{_who(results)} · {a['n']} labeled permit documents · exact-match"))
 
     g = results["gate"]
     clean_q = g["clean_total"] - g["clean_published"]
@@ -162,7 +171,7 @@ def render(results):
         f"Throughput: {t['speedup']}× faster in parallel",
         [("Sequential", t["sequential_s"]), (f"Parallel ({t['docs']} workers)", t["parallel_s"])],
         max_value=t["sequential_s"] * 1.15 or 1, value_fmt="{:.1f}s",
-        subtitle=f"{t['docs']} documents, local model"))
+        subtitle=f"{t['docs']} documents · {_who(results)}"))
     print("rendered 4 charts to", ASSETS)
 
 
@@ -182,7 +191,8 @@ def main():
     tput = throughput(provider, pack, labels, docs_dir)
     cost = costs(acc["avg_tokens_in"], acc["avg_tokens_out"])
 
-    results = {"provider": provider.name, "accuracy": acc, "gate": gate,
+    results = {"provider": provider.name, "model": getattr(provider, "model", provider.name),
+               "accuracy": acc, "gate": gate,
                "throughput": tput, "cost": cost,
                "avg_tokens": {"in": round(acc["avg_tokens_in"], 1),
                               "out": round(acc["avg_tokens_out"], 1)}}

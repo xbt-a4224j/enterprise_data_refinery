@@ -1,6 +1,7 @@
-DELAWARE COUNTY COUNTY PERMIT RECORD
+PERMIT RECORD
 Permit ID: BP-2026-04481
-Address: 101 Dogwood St, Delaware County
+Jurisdiction: Fairview
+Address: 101 Dogwood St, Fairview
 Permit Type: Plumbing
 Current Status: Expired
 Issued: 2026-05-13

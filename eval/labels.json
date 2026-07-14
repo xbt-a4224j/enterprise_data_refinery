@@ -10,7 +10,7 @@
   },
   "permit_01.txt": {
     "permit_id": "BP-2026-04037",
-    "jurisdiction": "Delaware County",
+    "jurisdiction": "Fairview",
     "permit_type": "Commercial New Construction",
     "status": "Under Review",
     "issued_date": "2026-02-04",
@@ -118,7 +118,7 @@
   },
   "permit_13.txt": {
     "permit_id": "BP-2026-04481",
-    "jurisdiction": "Delaware County",
+    "jurisdiction": "Fairview",
     "permit_type": "Plumbing",
     "status": "Expired",
     "issued_date": "2026-05-13",

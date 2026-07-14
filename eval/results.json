@@ -1,0 +1,42 @@
+{
+  "provider": "claude",
+  "model": "claude-haiku-4-5",
+  "accuracy": {
+    "per_field": {
+      "permit_id": 100.0,
+      "jurisdiction": 100.0,
+      "permit_type": 100.0,
+      "status": 100.0,
+      "issued_date": 100.0,
+      "valuation_usd": 100.0,
+      "applicant": 100.0
+    },
+    "overall": 100.0,
+    "n": 24,
+    "avg_tokens_in": 515.2916666666666,
+    "avg_tokens_out": 116.79166666666667,
+    "low_confidence": 0
+  },
+  "gate": {
+    "clean_total": 6,
+    "clean_published": 6,
+    "violation_total": 5,
+    "violation_quarantined": 5
+  },
+  "throughput": {
+    "docs": 6,
+    "sequential_s": 5.91,
+    "parallel_s": 1.52,
+    "speedup": 3.88
+  },
+  "cost": {
+    "Local (Ollama)": 0.0,
+    "Haiku 4.5": 1.1,
+    "Sonnet 5": 3.3,
+    "Opus 4.8": 5.5
+  },
+  "avg_tokens": {
+    "in": 515.3,
+    "out": 116.8
+  }
+}

@@ -1,5 +1,6 @@
-AUBURN COUNTY PERMIT RECORD
+PERMIT RECORD
 Permit ID: BP-2026-04259
+Jurisdiction: Auburn
 Address: 59 Birch St, Auburn
 Permit Type: Mechanical
 Current Status: Finaled

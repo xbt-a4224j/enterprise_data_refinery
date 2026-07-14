@@ -1,5 +1,6 @@
-CITY OF FRANKLIN - BUILDING PERMIT
+BUILDING PERMIT
 Permit No: BP-2026-04666
+Jurisdiction: Franklin
 Site Address: 136 Dogwood St, Franklin
 Type: Residential Solar
 Status: Expired

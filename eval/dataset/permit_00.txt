@@ -1,5 +1,6 @@
-CITY OF SPRINGFIELD - BUILDING PERMIT
+BUILDING PERMIT
 Permit No: BP-2026-04000
+Jurisdiction: Springfield
 Site Address: 10 Maple St, Springfield
 Type: Residential Alteration
 Status: Issued

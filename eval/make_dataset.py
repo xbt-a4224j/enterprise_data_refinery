@@ -7,7 +7,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 DOCS = HERE / "dataset"
 
-JUR = ["Springfield", "Delaware County", "Cary", "Lakewood", "Media", "Riverside",
+JUR = ["Springfield", "Fairview", "Cary", "Lakewood", "Media", "Riverside",
        "Franklin", "Auburn", "Kingsport", "Bristol", "Salem", "Dover"]
 TYPES = ["Residential Alteration", "Commercial New Construction", "Residential Solar",
          "Demolition", "Electrical", "Plumbing", "Roofing", "Mechanical"]
@@ -17,13 +17,13 @@ APPL = ["Rivera Construction LLC", "Keystone Developers Inc", "SunFair Energy",
 
 # Three label templates to test format robustness.
 TEMPLATES = [
-    ("t1", "CITY OF {jur_up} - BUILDING PERMIT\nPermit No: {pid}\nSite Address: {addr}\n"
+    ("t1", "BUILDING PERMIT\nPermit No: {pid}\nJurisdiction: {jur}\nSite Address: {addr}\n"
            "Type: {ptype}\nStatus: {status}\nDate Issued: {date}\n"
            "Estimated Valuation: ${val:,}\nApplicant: {appl}\n"),
-    ("t2", "{jur_up} COUNTY PERMIT RECORD\nPermit ID: {pid}\nAddress: {addr}\n"
+    ("t2", "PERMIT RECORD\nPermit ID: {pid}\nJurisdiction: {jur}\nAddress: {addr}\n"
            "Permit Type: {ptype}\nCurrent Status: {status}\nIssued: {date}\n"
            "Valuation: ${val:,}\nApplicant Name: {appl}\n"),
-    ("t3", "TOWN OF {jur_up} - PERMIT\nNo. {pid}\nLocation: {addr}\nCategory: {ptype}\n"
+    ("t3", "PERMIT\nNo. {pid}\nJurisdiction: {jur}\nLocation: {addr}\nCategory: {ptype}\n"
            "Status: {status}\nIssue Date: {date}\nJob Value: ${val:,}\nApplicant: {appl}\n"),
 ]
 
@@ -53,7 +53,7 @@ def main():
     labels = {}
     for i, r in enumerate(_rows()):
         tname, tmpl = TEMPLATES[i % len(TEMPLATES)]
-        text = tmpl.format(jur_up=r["jur"].upper(), addr=r["addr"], pid=r["pid"],
+        text = tmpl.format(jur=r["jur"], addr=r["addr"], pid=r["pid"],
                            ptype=r["ptype"], status=r["status"], date=r["date"],
                            val=r["val"], appl=r["appl"])
         name = f"permit_{i:02d}.txt"

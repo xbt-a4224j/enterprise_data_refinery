@@ -1,5 +1,6 @@
-MEDIA COUNTY PERMIT RECORD
+PERMIT RECORD
 Permit ID: BP-2026-04148
+Jurisdiction: Media
 Address: 38 Elm St, Media
 Permit Type: Electrical
 Current Status: Approved

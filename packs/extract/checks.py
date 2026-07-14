@@ -15,7 +15,7 @@ def required_permit_id(rows, cfg):
 def valuation_non_negative(rows, cfg):
     bad = [
         i for i, r in enumerate(rows)
-        if r.get("valuation_usd") is not None and r["valuation_usd"] < 0
+        if isinstance(r.get("valuation_usd"), int | float) and r["valuation_usd"] < 0
     ]
     return CheckOutcome(
         name="valuation_non_negative", passed=not bad, blocking=True,

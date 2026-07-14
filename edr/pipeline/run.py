@@ -15,7 +15,9 @@ from edr.llm.base import LLMProvider
 from edr.models import Canonical, Drop, MappingCache, Run, Source
 from edr.packs.adapters import build_adapter
 from edr.packs.base import LoadedPack
+from edr.pipeline.drift import detect_drift
 from edr.pipeline.extract import extract_document
+from edr.pipeline.gate import evaluate_drop
 
 
 def _hash(s: str) -> str:
@@ -118,3 +120,24 @@ def run_source(
     return RunResult(
         drop=drop, run=run, llm_calls=llm_calls, cache_hits=cache_hits, records=out_records
     )
+
+
+def ingest(
+    session: Session,
+    pack: LoadedPack,
+    source: Source,
+    provider: LLMProvider,
+    *,
+    pack_dir: Path,
+    drop_date: str | None = None,
+) -> RunResult:
+    """Full pipeline: spine (fetch → extract → canonical) → eval gate → drift.
+
+    Fail-closed: the gate publishes or quarantines the drop before it is queryable
+    as published data.
+    """
+    res = run_source(session, pack, source, provider, pack_dir=pack_dir, drop_date=drop_date)
+    if res.drop.status == "pending":  # fresh drop (not an idempotent skip)
+        evaluate_drop(session, res.drop, pack, res.run)
+        detect_drift(session, res.drop, pack)
+    return res

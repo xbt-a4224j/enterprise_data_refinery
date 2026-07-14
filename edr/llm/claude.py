@@ -16,7 +16,7 @@ class ClaudeProvider:
     name = "claude"
 
     def __init__(
-        self, api_key: str, model: str = "claude-sonnet-5", client: httpx.Client | None = None
+        self, api_key: str, model: str = "claude-haiku-4-5", client: httpx.Client | None = None
     ):
         if not api_key:
             raise ValueError("ClaudeProvider requires EDR_ANTHROPIC_API_KEY")
@@ -55,4 +55,5 @@ class ClaudeProvider:
             tokens_in=usage.get("input_tokens", 0),
             tokens_out=usage.get("output_tokens", 0),
             provider="claude",
+            model=self.model,
         )

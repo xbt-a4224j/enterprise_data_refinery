@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     ollama_host: str = "http://localhost:11434"
     ollama_model: str = "qwen2.5:7b"
     anthropic_api_key: str = ""
+    anthropic_model: str = "claude-haiku-4-5"  # fast + cheap for extraction; or claude-sonnet-5
 
     # App
     admin_token: str = "change-me"

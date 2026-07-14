@@ -7,9 +7,14 @@ from typing import Protocol, runtime_checkable
 
 from pydantic import BaseModel
 
-# Approximate public Claude list prices (USD per token) for the would-be-cost readout.
-CLAUDE_INPUT_PER_TOK = 3.00 / 1_000_000
-CLAUDE_OUTPUT_PER_TOK = 15.00 / 1_000_000
+# Public Claude list prices (USD per 1M tokens) → per-token, for the cost readout.
+CLAUDE_PRICING = {
+    "claude-haiku-4-5": (1.00 / 1_000_000, 5.00 / 1_000_000),
+    "claude-sonnet-5": (3.00 / 1_000_000, 15.00 / 1_000_000),
+    "claude-opus-4-8": (5.00 / 1_000_000, 25.00 / 1_000_000),
+}
+# Reference model for the "would-be Claude" number shown while running locally.
+REFERENCE_MODEL = "claude-sonnet-5"
 
 
 class LLMResult(BaseModel):
@@ -17,10 +22,13 @@ class LLMResult(BaseModel):
     tokens_in: int = 0
     tokens_out: int = 0
     provider: str = ""
+    model: str = ""  # set by the Claude provider; blank for local providers
 
     @property
     def would_be_claude_usd(self) -> float:
-        return self.tokens_in * CLAUDE_INPUT_PER_TOK + self.tokens_out * CLAUDE_OUTPUT_PER_TOK
+        """Actual cost when run on Claude (self.model); a Sonnet-5 reference locally."""
+        rin, rout = CLAUDE_PRICING.get(self.model) or CLAUDE_PRICING[REFERENCE_MODEL]
+        return self.tokens_in * rin + self.tokens_out * rout
 
 
 @runtime_checkable
@@ -44,7 +52,7 @@ def get_provider(settings=None) -> LLMProvider:
     if kind == "claude":
         from edr.llm.claude import ClaudeProvider
 
-        return ClaudeProvider(settings.anthropic_api_key)
+        return ClaudeProvider(settings.anthropic_api_key, settings.anthropic_model)
     from edr.llm.fake import FakeProvider
 
     return FakeProvider()

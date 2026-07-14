@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enterprise Data Refinery — architecture diagrams</title>
+<style>
+  :root{
+    --ink:#1d1d1f; --muted:#6b6b70; --line:#d8d8d5; --panel:#f6f6f4; --panel2:#ecece9;
+    --accent:#1f7a5a; --accentbg:#e6f1ec; --blue:#2f6fb0; --bluebg:#e9f0f7;
+    --red:#b23b3b; --redbg:#f6e8e7; --amber:#a9690a; --amberbg:#f4ecdd;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#fff;color:var(--ink);
+    font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px;margin:0 auto;padding:44px 26px 80px}
+  header h1{font-size:26px;margin:0 0 4px;letter-spacing:-.01em}
+  header p{color:var(--muted);margin:0 0 8px}
+  .rule{height:1px;background:var(--line);margin:26px 0}
+  section{margin:34px 0}
+  h2{font-size:13px;text-transform:uppercase;letter-spacing:.07em;color:var(--accent);
+    margin:0 0 2px;font-weight:800}
+  h2 .n{color:var(--muted);margin-right:8px}
+  .cap{color:var(--muted);font-size:13.5px;margin:2px 0 14px;max-width:760px}
+  figure{margin:0;background:var(--panel);border:1px solid var(--line);border-radius:12px;
+    padding:18px 16px;overflow-x:auto}
+  svg{display:block;max-width:100%;height:auto;margin:0 auto}
+  text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+  .t{fill:var(--ink)} .m{fill:var(--muted)}
+  footer{color:var(--muted);font-size:12.5px;margin-top:40px;border-top:1px solid var(--line);padding-top:14px}
+  @media print{ figure{break-inside:avoid} section{break-inside:avoid} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Enterprise Data Refinery — how it works</h1>
+  <p>Hostile documents in, trustworthy structured data out. The model does the extraction; the trust-and-ops layer is the product.</p>
+</header>
+<div class="rule"></div>
+
+<!-- ============ 1. WHAT IT DOES ============ -->
+<section>
+  <h2><span class="n">01</span>What it does</h2>
+  <p class="cap">The LLM call is the easy 30%. The mass of the system — and the reason an enterprise would run it — is the trust-and-ops layer wrapped around the model.</p>
+  <figure>
+  <svg viewBox="0 0 920 350" role="img" aria-label="Documents flow through the model and trust layer into trustworthy data">
+    <defs>
+      <marker id="a1" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+        <path d="M0,0 L9,4.5 L0,9 z" fill="#6b6b70"/>
+      </marker>
+    </defs>
+    <!-- left: documents -->
+    <text x="30" y="34" class="m" font-size="12" font-weight="700" letter-spacing=".05em">HOSTILE, HETEROGENEOUS</text>
+    <text x="30" y="50" class="m" font-size="12" font-weight="700" letter-spacing=".05em">DOCUMENTS</text>
+    <g font-size="13">
+      <rect x="30" y="70" width="150" height="34" rx="6" fill="#fff" stroke="var(--line)"/>
+      <text x="46" y="92" class="t">PDF scans</text>
+      <rect x="30" y="112" width="150" height="34" rx="6" fill="#fff" stroke="var(--line)"/>
+      <text x="46" y="134" class="t">Bespoke CSV / XML</text>
+      <rect x="30" y="154" width="150" height="34" rx="6" fill="#fff" stroke="var(--line)"/>
+      <text x="46" y="176" class="t">Free-text narratives</text>
+      <rect x="30" y="196" width="150" height="34" rx="6" fill="#fff" stroke="var(--line)"/>
+      <text x="46" y="218" class="t">Emails / forms</text>
+    </g>
+    <line x1="188" y1="150" x2="228" y2="150" stroke="#6b6b70" stroke-width="1.5" marker-end="url(#a1)"/>
+
+    <!-- center: engine -->
+    <rect x="238" y="46" width="360" height="258" rx="12" fill="#fff" stroke="var(--line)"/>
+    <!-- model strip (30%) -->
+    <rect x="238" y="46" width="360" height="60" rx="12" fill="var(--bluebg)" stroke="var(--blue)" stroke-opacity=".35"/>
+    <rect x="238" y="94" width="360" height="12" fill="var(--bluebg)"/>
+    <text x="258" y="72" fill="var(--blue)" font-size="13.5" font-weight="800">LLM extraction</text>
+    <text x="258" y="90" fill="var(--blue)" font-size="12">the easy 30% · local model, pluggable to Claude</text>
+    <!-- trust layer (70%) -->
+    <rect x="238" y="110" width="360" height="194" rx="0" fill="var(--accentbg)"/>
+    <rect x="238" y="110" width="360" height="194" rx="0" fill="none" stroke="var(--accent)" stroke-opacity=".3"/>
+    <text x="258" y="134" fill="var(--accent)" font-size="13.5" font-weight="800">Trust &amp; ops layer — the 70%</text>
+    <g font-size="12.5">
+      <rect x="258" y="146" width="150" height="30" rx="6" fill="#fff" stroke="var(--accent)" stroke-opacity=".4"/>
+      <text x="270" y="165" class="t">Eval gate · fail-closed</text>
+      <rect x="428" y="146" width="150" height="30" rx="6" fill="#fff" stroke="var(--accent)" stroke-opacity=".4"/>
+      <text x="440" y="165" class="t">Drift detection</text>
+      <rect x="258" y="182" width="150" height="30" rx="6" fill="#fff" stroke="var(--accent)" stroke-opacity=".4"/>
+      <text x="270" y="201" class="t">Provenance</text>
+      <rect x="428" y="182" width="150" height="30" rx="6" fill="#fff" stroke="var(--accent)" stroke-opacity=".4"/>
+      <text x="440" y="201" class="t">Observability</text>
+      <rect x="258" y="218" width="320" height="30" rx="6" fill="#fff" stroke="var(--accent)" stroke-opacity=".4"/>
+      <text x="270" y="237" class="t">Cost accounting · $0 local vs. would-be-Claude spend</text>
+    </g>
+    <text x="258" y="272" class="m" font-size="12">Bad data is caught here, never published.</text>
+
+    <line x1="600" y1="150" x2="640" y2="150" stroke="#6b6b70" stroke-width="1.5" marker-end="url(#a1)"/>
+
+    <!-- right: outputs -->
+    <text x="650" y="34" class="m" font-size="12" font-weight="700" letter-spacing=".05em">OUTPUT</text>
+    <rect x="650" y="96" width="240" height="52" rx="8" fill="#fff" stroke="var(--accent)"/>
+    <text x="666" y="120" class="t" font-size="13.5" font-weight="700">Trustworthy structured data</text>
+    <text x="666" y="138" class="m" font-size="12">with provenance on every row</text>
+    <rect x="650" y="160" width="240" height="52" rx="8" fill="#fff" stroke="var(--line)"/>
+    <text x="666" y="184" class="t" font-size="13.5" font-weight="700">Published dataset</text>
+    <text x="666" y="202" class="m" font-size="12">GitHub data repo · Hugging Face</text>
+  </svg>
+  </figure>
+</section>
+
+<!-- ============ 2. PIPELINE ============ -->
+<section>
+  <h2><span class="n">02</span>The pipeline — fail-closed</h2>
+  <p class="cap">Every run, every Pack. The eval gate is the hinge: pass and it publishes with provenance; fail and it quarantines and alerts. Nothing bad ships.</p>
+  <figure>
+  <svg viewBox="0 0 940 400" role="img" aria-label="Pipeline from schedule through fetch, cache, extract, eval gate, to canonical or quarantine">
+    <defs>
+      <marker id="a2" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+        <path d="M0,0 L9,4.5 L0,9 z" fill="#6b6b70"/></marker>
+      <marker id="a2g" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+        <path d="M0,0 L9,4.5 L0,9 z" fill="#1f7a5a"/></marker>
+      <marker id="a2r" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+        <path d="M0,0 L9,4.5 L0,9 z" fill="#b23b3b"/></marker>
+    </defs>
+    <g font-size="12.5" text-anchor="middle">
+      <!-- main row y=80 -->
+      <rect x="20" y="60" width="86" height="42" rx="8" fill="#fff" stroke="var(--line)"/>
+      <text x="63" y="86" class="t">Schedule</text>
+      <line x1="106" y1="81" x2="132" y2="81" stroke="#6b6b70" stroke-width="1.4" marker-end="url(#a2)"/>
+
+      <rect x="134" y="60" width="86" height="42" rx="8" fill="#fff" stroke="var(--line)"/>
+      <text x="177" y="86" class="t">Fetch raw</text>
+      <line x1="220" y1="81" x2="250" y2="81" stroke="#6b6b70" stroke-width="1.4" marker-end="url(#a2)"/>
+
+      <!-- cache diamond -->
+      <polygon points="300,52 344,81 300,110 256,81" fill="var(--panel2)" stroke="var(--line)"/>
+      <text x="300" y="78" class="t">Cache?</text>
+      <text x="300" y="94" class="m" font-size="11">hit / miss</text>
+      <text x="300" y="128" class="m" font-size="11">miss ↓ · hit ↘ skip LLM</text>
+
+      <line x1="344" y1="81" x2="372" y2="81" stroke="#6b6b70" stroke-width="1.4" marker-end="url(#a2)"/>
+      <rect x="374" y="60" width="104" height="42" rx="8" fill="var(--bluebg)" stroke="var(--blue)" stroke-opacity=".45"/>
+      <text x="426" y="80" fill="var(--blue)">LLM extract</text>
+      <text x="426" y="95" fill="var(--blue)" font-size="11">infer / map</text>
+      <line x1="478" y1="81" x2="506" y2="81" stroke="#6b6b70" stroke-width="1.4" marker-end="url(#a2)"/>
+
+      <rect x="508" y="60" width="74" height="42" rx="8" fill="#fff" stroke="var(--line)"/>
+      <text x="545" y="86" class="t">Apply</text>
+      <line x1="582" y1="81" x2="612" y2="81" stroke="#6b6b70" stroke-width="1.4" marker-end="url(#a2)"/>
+
+      <!-- eval gate diamond -->
+      <polygon points="668,44 724,81 668,118 612,81" fill="var(--accentbg)" stroke="var(--accent)"/>
+      <text x="668" y="78" fill="var(--accent)" font-weight="800">EVAL</text>
+      <text x="668" y="94" fill="var(--accent)" font-weight="800">GATE</text>
+
+      <!-- hit bypass arrow: cache -> apply -->
+      <path d="M300,110 C300,150 545,150 545,104" fill="none" stroke="#6b6b70" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#a2)"/>
+      <text x="422" y="146" class="m" font-size="11">hit: skip the model (no tokens)</text>
+
+      <!-- PASS branch (right) -->
+      <line x1="724" y1="81" x2="754" y2="81" stroke="#1f7a5a" stroke-width="1.6" marker-end="url(#a2g)"/>
+      <text x="742" y="72" fill="var(--accent)" font-size="11" font-weight="700">pass</text>
+      <rect x="756" y="60" width="164" height="42" rx="8" fill="#fff" stroke="var(--accent)"/>
+      <text x="838" y="78" class="t">Write canonical</text>
+      <text x="838" y="93" class="m" font-size="11">+ provenance</text>
+      <line x1="838" y1="102" x2="838" y2="126" stroke="#1f7a5a" stroke-width="1.6" marker-end="url(#a2g)"/>
+      <rect x="756" y="128" width="164" height="40" rx="8" fill="#fff" stroke="var(--line)"/>
+      <text x="838" y="153" class="t">Publish dataset</text>
+
+      <!-- FAIL branch (down) -->
+      <line x1="668" y1="118" x2="668" y2="150" stroke="#b23b3b" stroke-width="1.6" marker-end="url(#a2r)"/>
+      <text x="690" y="140" fill="var(--red)" font-size="11" font-weight="700">fail</text>
+      <rect x="586" y="152" width="164" height="44" rx="8" fill="var(--redbg)" stroke="var(--red)"/>
+      <text x="668" y="172" fill="var(--red)" font-weight="700">Quarantine + Alert</text>
+      <text x="668" y="188" class="m" font-size="11">last-good drop untouched</text>
+
+      <!-- drift detector -->
+      <rect x="256" y="250" width="230" height="52" rx="8" fill="#fff" stroke="var(--line)"/>
+      <text x="371" y="272" class="t">Drift detector</text>
+      <text x="371" y="289" class="m" font-size="11">schema drift · value drift</text>
+      <!-- canonical feeds drift -->
+      <path d="M838,168 C838,320 500,300 486,283" fill="none" stroke="#6b6b70" stroke-width="1.2" marker-end="url(#a2)"/>
+      <text x="640" y="316" class="m" font-size="11" text-anchor="middle">each drop compared to history</text>
+      <!-- drift invalidates cache -->
+      <path d="M300,250 C300,210 300,150 300,112" fill="none" stroke="#a9690a" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#a2)"/>
+      <text x="196" y="210" fill="var(--amber)" font-size="11" text-anchor="middle">schema drift →</text>
+      <text x="196" y="224" fill="var(--amber)" font-size="11" text-anchor="middle">invalidate cache, re-map</text>
+    </g>
+  </svg>
+  </figure>
+</section>
+
+<!-- ============ 3. PACK MODEL ============ -->
+<section>
+  <h2><span class="n">03</span>The Pack model — swappable domains</h2>
+  <p class="cap">The core never changes. A document domain is a Pack: a source adapter, a target schema, its eval checks, and its output workflows. Ship three, write your own.</p>
+  <figure>
+  <svg viewBox="0 0 920 430" role="img" aria-label="Refinery core surrounded by four pluggable Packs">
+    <defs><marker id="a3" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#6b6b70"/></marker></defs>
+    <!-- core -->
+    <rect x="330" y="150" width="260" height="130" rx="12" fill="var(--accentbg)" stroke="var(--accent)"/>
+    <text x="460" y="178" text-anchor="middle" fill="var(--accent)" font-size="14" font-weight="800">Refinery core</text>
+    <text x="460" y="196" text-anchor="middle" class="m" font-size="12">never changes</text>
+    <text x="460" y="222" text-anchor="middle" class="t" font-size="12.5">pipeline · eval gate · drift</text>
+    <text x="460" y="240" text-anchor="middle" class="t" font-size="12.5">provenance · observability · cost</text>
+    <text x="460" y="264" text-anchor="middle" class="m" font-size="12">Dagster · Postgres · Ollama</text>
+
+    <!-- pack card generator positions -->
+    <!-- extract TL -->
+    <g font-size="12">
+      <rect x="40" y="40" width="230" height="96" rx="10" fill="#fff" stroke="var(--line)"/>
+      <text x="56" y="62" class="t" font-weight="800">extract <tspan class="m" font-weight="400">· flagship</tspan></text>
+      <text x="56" y="80" class="m">prose / PDF → structured facts</text>
+      <text x="56" y="100" class="t" font-size="11.5">adapter · schema · checks · workflows</text>
+      <text x="56" y="118" class="m" font-size="11">county building permits</text>
+      <line x1="270" y1="120" x2="342" y2="176" stroke="#6b6b70" stroke-width="1.2" marker-end="url(#a3)"/>
+
+      <!-- triage TR -->
+      <rect x="650" y="40" width="230" height="96" rx="10" fill="#fff" stroke="var(--line)"/>
+      <text x="666" y="62" class="t" font-weight="800">triage</text>
+      <text x="666" y="80" class="m">free-text → category + severity</text>
+      <text x="666" y="100" class="t" font-size="11.5">adapter · schema · checks · workflows</text>
+      <text x="666" y="118" class="m" font-size="11">CFPB consumer complaints</text>
+      <line x1="650" y1="120" x2="578" y2="176" stroke="#6b6b70" stroke-width="1.2" marker-end="url(#a3)"/>
+
+      <!-- normalize BL -->
+      <rect x="40" y="300" width="230" height="96" rx="10" fill="#fff" stroke="var(--line)"/>
+      <text x="56" y="322" class="t" font-weight="800">normalize</text>
+      <text x="56" y="340" class="m">N formats → one canonical</text>
+      <text x="56" y="360" class="t" font-size="11.5">adapter · schema · checks · workflows</text>
+      <text x="56" y="378" class="m" font-size="11">USAspending contracts</text>
+      <line x1="270" y1="316" x2="342" y2="258" stroke="#6b6b70" stroke-width="1.2" marker-end="url(#a3)"/>
+
+      <!-- your pack BR -->
+      <rect x="650" y="300" width="230" height="96" rx="10" fill="#fff" stroke="var(--muted)" stroke-dasharray="5 4"/>
+      <text x="666" y="322" class="t" font-weight="800">your Pack</text>
+      <text x="666" y="340" class="m">any document domain</text>
+      <text x="666" y="360" class="t" font-size="11.5">copy packs/_template/ · or the wizard</text>
+      <text x="666" y="378" class="m" font-size="11">zero core changes</text>
+      <line x1="650" y1="316" x2="578" y2="258" stroke="#6b6b70" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#a3)"/>
+    </g>
+  </svg>
+  </figure>
+</section>
+
+<!-- ============ 4. TWO-TIER UX ============ -->
+<section>
+  <h2><span class="n">04</span>Adding a Pack — two tiers</h2>
+  <p class="cap">Engineers drop in a directory. Non-engineers define a Pack by example: upload a sample, the model proposes the schema and checks, you tweak and save. Both write the same files.</p>
+  <figure>
+  <svg viewBox="0 0 920 320" role="img" aria-label="Developer tier and non-engineer tier both converge on a loaded Pack">
+    <defs><marker id="a4" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#6b6b70"/></marker></defs>
+    <g font-size="12.5">
+      <!-- lane A -->
+      <text x="30" y="46" class="m" font-size="12" font-weight="700" letter-spacing=".05em">DEVELOPER TIER</text>
+      <rect x="30" y="58" width="200" height="72" rx="10" fill="#fff" stroke="var(--line)"/>
+      <text x="46" y="80" class="t" font-weight="700">packs/&lt;name&gt;/</text>
+      <text x="46" y="99" class="m" font-size="11.5">pack.yaml · schema.py</text>
+      <text x="46" y="116" class="m" font-size="11.5">checks.py · adapter.py</text>
+      <line x1="230" y1="94" x2="266" y2="94" stroke="#6b6b70" stroke-width="1.4" marker-end="url(#a4)"/>
+      <rect x="268" y="70" width="150" height="48" rx="8" fill="var(--panel2)" stroke="var(--line)"/>
+      <text x="343" y="98" text-anchor="middle" class="t">docker compose up</text>
+      <line x1="418" y1="94" x2="612" y2="94" stroke="#6b6b70" stroke-width="1.4" marker-end="url(#a4)"/>
+
+      <!-- lane B -->
+      <text x="30" y="186" class="m" font-size="12" font-weight="700" letter-spacing=".05em">NON-ENGINEER TIER · admin wizard</text>
+      <rect x="30" y="198" width="150" height="60" rx="8" fill="#fff" stroke="var(--line)"/>
+      <text x="105" y="224" text-anchor="middle" class="t">Upload sample</text>
+      <text x="105" y="241" text-anchor="middle" class="m" font-size="11">or paste a URL</text>
+      <line x1="180" y1="228" x2="208" y2="228" stroke="#6b6b70" stroke-width="1.4" marker-end="url(#a4)"/>
+      <rect x="210" y="198" width="160" height="60" rx="8" fill="var(--bluebg)" stroke="var(--blue)" stroke-opacity=".45"/>
+      <text x="290" y="222" text-anchor="middle" fill="var(--blue)">LLM proposes</text>
+      <text x="290" y="240" text-anchor="middle" fill="var(--blue)" font-size="11">schema + draft checks</text>
+      <line x1="370" y1="228" x2="398" y2="228" stroke="#6b6b70" stroke-width="1.4" marker-end="url(#a4)"/>
+      <rect x="400" y="198" width="150" height="60" rx="8" fill="#fff" stroke="var(--line)"/>
+      <text x="475" y="224" text-anchor="middle" class="t">Review &amp; tweak</text>
+      <text x="475" y="241" text-anchor="middle" class="m" font-size="11">in the UI</text>
+      <line x1="550" y1="228" x2="578" y2="228" stroke="#6b6b70" stroke-width="1.4" marker-end="url(#a4)"/>
+      <rect x="580" y="198" width="150" height="60" rx="8" fill="#fff" stroke="var(--line)"/>
+      <text x="655" y="224" text-anchor="middle" class="t">Writes the same</text>
+      <text x="655" y="241" text-anchor="middle" class="m" font-size="11">packs/&lt;name&gt;/ files</text>
+      <path d="M730,222 C770,210 770,150 655,130" fill="none" stroke="#6b6b70" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#a4)"/>
+
+      <!-- converge -->
+      <rect x="614" y="70" width="150" height="48" rx="8" fill="var(--accentbg)" stroke="var(--accent)"/>
+      <text x="689" y="90" text-anchor="middle" fill="var(--accent)" font-weight="800">Loaded &amp; runnable</text>
+      <text x="689" y="108" text-anchor="middle" class="m" font-size="11">auto-discovered</text>
+    </g>
+  </svg>
+  </figure>
+</section>
+
+<!-- ============ 5. TOPOLOGY ============ -->
+<section>
+  <h2><span class="n">05</span>Topology — $0 local, cloud-portable</h2>
+  <p class="cap">One Docker Compose stack on your machine, no paid APIs. Twelve-factor, so the same containers lift to a managed cloud host when there's a reason to pay.</p>
+  <figure>
+  <svg viewBox="0 0 920 220" role="img" aria-label="Docker compose stack of five services, portable to cloud">
+    <defs><marker id="a5" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#6b6b70"/></marker></defs>
+    <rect x="30" y="40" width="600" height="140" rx="12" fill="var(--panel)" stroke="var(--muted)" stroke-dasharray="6 4"/>
+    <text x="46" y="64" class="m" font-size="12" font-weight="700" letter-spacing=".05em">DOCKER COMPOSE · localhost · $0</text>
+    <g font-size="12.5" text-anchor="middle">
+      <rect x="46" y="82" width="128" height="76" rx="8" fill="#fff" stroke="var(--accent)"/>
+      <text x="110" y="112" fill="var(--accent)" font-weight="700">Dagster</text>
+      <text x="110" y="130" class="m" font-size="11">schedule · obs</text>
+      <rect x="190" y="82" width="128" height="76" rx="8" fill="#fff" stroke="var(--blue)" stroke-opacity=".5"/>
+      <text x="254" y="112" fill="var(--blue)" font-weight="700">Ollama</text>
+      <text x="254" y="130" class="m" font-size="11">local model</text>
+      <rect x="334" y="82" width="128" height="76" rx="8" fill="#fff" stroke="var(--line)"/>
+      <text x="398" y="112" class="t" font-weight="700">Postgres</text>
+      <text x="398" y="130" class="m" font-size="11">canonical + state</text>
+      <rect x="478" y="82" width="128" height="76" rx="8" fill="#fff" stroke="var(--line)"/>
+      <text x="542" y="112" class="t" font-weight="700">App</text>
+      <text x="542" y="130" class="m" font-size="11">FastAPI + HTMX</text>
+    </g>
+    <line x1="630" y1="110" x2="690" y2="110" stroke="#6b6b70" stroke-width="1.3" stroke-dasharray="5 4" marker-end="url(#a5)"/>
+    <rect x="692" y="72" width="198" height="76" rx="10" fill="#fff" stroke="var(--line)"/>
+    <text x="791" y="104" text-anchor="middle" class="t" font-weight="700">ECS / Fargate / GKE</text>
+    <text x="791" y="124" text-anchor="middle" class="m" font-size="11.5">same containers, when it's worth paying</text>
+  </svg>
+  </figure>
+</section>
+
+<footer>
+  Enterprise Data Refinery. Diagrams are source-controlled in <code>docs/</code>. See <code>CLAUDE.md</code> for build context and <code>tickets.md</code> for the roadmap.
+</footer>
+</div>
+</body>
+</html>

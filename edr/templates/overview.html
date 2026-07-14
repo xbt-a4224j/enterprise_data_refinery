@@ -1,17 +1,34 @@
 {% extends "base.html" %}
-{% block subtitle %}<p>Live health of the refinery: what's fresh, what the gate is catching, and what it would cost on a frontier model.</p>{% endblock %}
+{% block eyebrow %}
+<div class="section-label" style="margin-bottom:14px"><span class="pulse"></span>Live · Refinery health</div>
+{% endblock %}
+{% block subtitle %}<p>What's fresh, what the gate is catching, and what it would cost on a frontier model.</p>{% endblock %}
 {% block content %}
-<div class="grid tiles" style="margin-bottom:18px">
+<div class="grid tiles reveal" style="margin-bottom:16px">
   <div class="tile"><div class="k">Gate pass rate</div>
     <div class="v {{ 'good' if (m.pass_rate or 0) >= 90 else 'warn' }}">{{ '%.0f%%'|format(m.pass_rate) if m.pass_rate is not none else '—' }}</div>
     <div class="sub">{{ m.published }} published · {{ m.quarantined }} quarantined</div></div>
   <div class="tile"><div class="k">Sources</div><div class="v">{{ m.enabled }}<span class="muted" style="font-size:15px">/{{ m.sources }}</span></div><div class="sub">enabled / total</div></div>
   <div class="tile"><div class="k">Open drift events</div><div class="v {{ 'warn' if m.drift else '' }}">{{ m.drift }}</div><div class="sub">schema + value shifts caught</div></div>
   <div class="tile"><div class="k">Canonical rows</div><div class="v">{{ '{:,}'.format(m.rows) }}</div><div class="sub">trustworthy, provenanced</div></div>
-  <div class="tile"><div class="k">Cost (local)</div><div class="v good">$0.00</div><div class="sub">would-be Claude: ${{ '%.4f'|format(m.would_be_claude) }}</div></div>
 </div>
 
-<div class="card">
+<div class="inverted reveal" style="padding:26px 28px; margin-bottom:16px">
+  <div class="row between" style="flex-wrap:wrap; gap:24px; position:relative; z-index:1">
+    <div>
+      <div class="k">Marginal cost, this run history</div>
+      <div class="v good" style="font-size:38px; font-weight:750; letter-spacing:-.03em">$0.00 <span style="font-family:var(--display); font-size:19px; color:rgba(255,255,255,.7)">local</span></div>
+      <div class="sub">Ollama on your machine — token spend tracks schema changes, not run count.</div>
+    </div>
+    <div style="text-align:right">
+      <div class="k">Would-be Claude</div>
+      <div class="v" style="font-size:38px; font-weight:750; letter-spacing:-.03em; font-variant-numeric:tabular-nums">${{ '%.4f'|format(m.would_be_claude) }}</div>
+      <div class="sub">{{ '{:,}'.format(m.tokens_in) }} in · {{ '{:,}'.format(m.tokens_out) }} out</div>
+    </div>
+  </div>
+</div>
+
+<div class="card reveal">
   <div class="hd"><h2>Recent runs</h2><a class="btn sm" href="/runs">All runs</a></div>
   <div class="bd flush">
     {% if runs %}

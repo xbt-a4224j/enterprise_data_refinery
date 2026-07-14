@@ -1,0 +1,56 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: edr
+      POSTGRES_PASSWORD: edr
+      POSTGRES_DB: edr
+    ports: ["5432:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U edr"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  ollama:
+    image: ollama/ollama:latest
+    ports: ["11434:11434"]
+    volumes: ["ollama:/root/.ollama"]
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    environment:
+      EDR_DATABASE_URL: postgresql+psycopg://edr:edr@db:5432/edr
+      EDR_OLLAMA_HOST: http://ollama:11434
+      EDR_LLM_PROVIDER: ${EDR_LLM_PROVIDER:-ollama}
+    command: >
+      sh -c "uv run alembic upgrade head &&
+             uv run uvicorn edr.app:app --host 0.0.0.0 --port 8000"
+    ports: ["8000:8000"]
+    depends_on:
+      db: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health').status==200 else 1)\""]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  dagster:
+    build: .
+    environment:
+      EDR_DATABASE_URL: postgresql+psycopg://edr:edr@db:5432/edr
+      EDR_OLLAMA_HOST: http://ollama:11434
+    command: uv run dagster dev -m edr.orchestrate -h 0.0.0.0 -p 3000
+    ports: ["3000:3000"]
+    depends_on:
+      db: {condition: service_healthy}
+
+volumes:
+  pgdata:
+  ollama:

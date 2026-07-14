@@ -1,0 +1,14 @@
+name: triage
+task_type: triage
+cadence: daily
+schema_ref: ComplaintTriage
+instructions: >
+  Classify the consumer complaint. Return category (one of: billing, fraud, service,
+  reporting, other), severity (low|medium|high), routing_team, and a one-line summary.
+sources:
+  - name: cfpb-demo
+    kind: file
+    location: "fixtures/*.txt"
+checks:
+  null_rate:
+    max: { category: 0.0, severity: 0.0 }

@@ -1,0 +1,14 @@
+name: normalize
+task_type: normalize
+cadence: weekly
+schema_ref: ContractRecord
+instructions: >
+  Normalize the federal contract record into: vendor, amount_usd (number), award_date
+  (YYYY-MM-DD), agency, description. Fields appear under different labels per source.
+sources:
+  - name: usaspending-demo
+    kind: file
+    location: "fixtures/*.txt"
+checks:
+  null_rate:
+    max: { vendor: 0.0, amount_usd: 0.34 }

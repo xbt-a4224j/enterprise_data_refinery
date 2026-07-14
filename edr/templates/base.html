@@ -9,9 +9,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Calistoga&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/app.css">
   <script>
+    // Resolve the effective theme and set it explicitly, so the toggle always flips
+    // the *effective* theme in a single click (not just the attribute).
     (function () {
-      const t = localStorage.getItem("edr-theme");
-      if (t) document.documentElement.setAttribute("data-theme", t);
+      var t = localStorage.getItem("edr-theme");
+      if (!t) t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", t);
     })();
   </script>
   <script src="/static/htmx.min.js" defer></script>

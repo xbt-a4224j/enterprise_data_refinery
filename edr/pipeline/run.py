@@ -26,11 +26,12 @@ def _hash(s: str) -> str:
 
 @dataclass
 class RunResult:
-    drop: Drop
+    drop: Drop | None
     run: Run
     llm_calls: int = 0
     cache_hits: int = 0
     records: list[dict] = field(default_factory=list)
+    failures: list[str] = field(default_factory=list)
 
 
 def run_source(
@@ -55,22 +56,32 @@ def run_source(
     llm_calls = cache_hits = 0
     tokens_in = tokens_out = 0
     cost = 0.0
+    failures: list[str] = []
 
     for ref in refs:
-        doc = adapter.fetch(ref)
+        try:
+            doc = adapter.fetch(ref)
+        except Exception as e:  # noqa: BLE001  one bad doc must not sink the whole run
+            failures.append(f"fetch {ref}: {e}")
+            continue
         dh = _hash(doc.content)
-        doc_hashes.append(dh)
         cached = session.scalar(
             select(MappingCache).where(
                 MappingCache.source_id == source.id, MappingCache.schema_hash == dh
             )
         )
         if cached is not None:
+            doc_hashes.append(dh)
             records.append(cached.plan["record"])
             low_flags.append(cached.plan.get("low_confidence", False))
             cache_hits += 1
             continue
-        record, low_conf, res = extract_document(pack, provider, doc)
+        try:
+            record, low_conf, res = extract_document(pack, provider, doc)
+        except Exception as e:  # noqa: BLE001
+            failures.append(f"extract {ref}: {e}")
+            continue
+        doc_hashes.append(dh)
         llm_calls += 1
         tokens_in += res.tokens_in
         tokens_out += res.tokens_out
@@ -79,10 +90,18 @@ def run_source(
         low_flags.append(low_conf)
         session.add(
             MappingCache(
-                source_id=source.id,
-                schema_hash=dh,
+                source_id=source.id, schema_hash=dh,
                 plan={"record": record, "low_confidence": low_conf},
             )
+        )
+
+    # Every document failed -> failed run, no drop, last-good published data untouched.
+    if refs and not records:
+        run.status = "failed"
+        run.meta = {"failures": failures}
+        session.flush()
+        return RunResult(
+            drop=None, run=run, llm_calls=llm_calls, cache_hits=cache_hits, failures=failures
         )
 
     content_hash = _hash("|".join(sorted(doc_hashes)))
@@ -114,11 +133,14 @@ def run_source(
         )
         out_records.append(record)
 
-    run.status = "ok"
+    # Some docs failed but others succeeded -> degraded (drop still produced + gated).
+    run.status = "degraded" if failures else "ok"
+    run.meta = {"failures": failures} if failures else {}
     run.tokens_in, run.tokens_out, run.cost_usd = tokens_in, tokens_out, cost
     session.flush()
     return RunResult(
-        drop=drop, run=run, llm_calls=llm_calls, cache_hits=cache_hits, records=out_records
+        drop=drop, run=run, llm_calls=llm_calls, cache_hits=cache_hits,
+        records=out_records, failures=failures,
     )
 
 
@@ -137,7 +159,7 @@ def ingest(
     as published data.
     """
     res = run_source(session, pack, source, provider, pack_dir=pack_dir, drop_date=drop_date)
-    if res.drop.status == "pending":  # fresh drop (not an idempotent skip)
+    if res.drop is not None and res.drop.status == "pending":  # fresh drop, not a skip/failure
         evaluate_drop(session, res.drop, pack, res.run)
         detect_drift(session, res.drop, pack)
     return res

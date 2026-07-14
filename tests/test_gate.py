@@ -104,3 +104,13 @@ def test_provenance(db_session):
     assert p["checks_passed"] is True
     assert p["source"]["pack"] == "extract"
     assert any(c["name"] == "schema_conformance" for c in p["checks"])
+
+
+def test_alert_emitted_on_quarantine(db_session):
+    from edr.models import LogEvent
+
+    s = _src(db_session)
+    d = _drop(db_session, s, [{"permit_id": None, "valuation_usd": 1}], "h1")
+    evaluate_drop(db_session, d, _pack())
+    alerts = list(db_session.scalars(select(LogEvent).where(LogEvent.logger == "alert")))
+    assert alerts and alerts[0].context.get("failed_checks")

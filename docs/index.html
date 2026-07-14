@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Enterprise Data Refinery — the trust layer for AI document extraction</title>
+<meta name="description" content="Turn hostile documents into trustworthy structured data. Eval gates that fail closed, drift detection, provenance, and cost accounting — self-hostable, local, free.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Calistoga&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAFAFA; --card:#fff; --panel-2:#F1F5F9; --line:#E2E8F0; --line-strong:#CBD5E1;
+  --ink:#0F172A; --ink-2:#475569; --ink-3:#64748B;
+  --accent:#0052FF; --accent-2:#4D7CFF; --accent-soft:rgba(0,82,255,.06); --accent-border:rgba(0,82,255,.28);
+  --red:#DC2626; --amber:#B45309;
+  --gradient:linear-gradient(135deg,#0052FF,#4D7CFF); --gradient-h:linear-gradient(90deg,#0052FF,#4D7CFF);
+  --mono:"JetBrains Mono",ui-monospace,monospace; --sans:"Inter",-apple-system,system-ui,sans-serif;
+  --display:"Calistoga",Georgia,serif; --ease:cubic-bezier(.16,1,.3,1);
+  --shadow-md:0 4px 6px rgba(15,23,42,.07); --shadow-lg:0 12px 24px rgba(15,23,42,.09);
+  --shadow-xl:0 22px 40px rgba(15,23,42,.12);
+  --shadow-accent:0 6px 18px rgba(0,82,255,.28); --shadow-accent-lg:0 12px 30px rgba(0,82,255,.38);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--bg);line-height:1.6;
+  -webkit-font-smoothing:antialiased;}
+a{color:inherit;text-decoration:none;}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
+h1,h2,h3{margin:0;font-family:var(--display);font-weight:400;letter-spacing:-.02em;line-height:1.1;}
+p{margin:0;}
+.gt{background:var(--gradient-h);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.label{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--accent-border);
+  background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:6px 15px;
+  font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.15em;}
+.label .pulse{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 2s var(--ease) infinite;}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.35);opacity:.55}}
+.btn{display:inline-flex;align-items:center;gap:9px;padding:13px 22px;border-radius:12px;font-weight:600;
+  font-size:15px;border:1px solid var(--line-strong);background:#fff;color:var(--ink);cursor:pointer;
+  transition:all .22s var(--ease);}
+.btn:hover{border-color:var(--accent-border);background:var(--panel-2);}
+.btn.primary{background:var(--gradient);color:#fff;border-color:transparent;box-shadow:var(--shadow-accent);}
+.btn.primary:hover{transform:translateY(-2px);box-shadow:var(--shadow-accent-lg);filter:brightness(1.07);}
+.btn .arrow{transition:transform .22s var(--ease);}
+.btn:hover .arrow{transform:translateX(4px);}
+
+/* nav */
+nav{position:sticky;top:0;z-index:20;backdrop-filter:saturate(150%) blur(10px);
+  background:rgba(250,250,250,.8);border-bottom:1px solid var(--line);}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;}
+nav .brand{display:flex;align-items:center;gap:11px;font-family:var(--display);font-size:18px;}
+nav .brand .dot{width:13px;height:13px;border-radius:4px;background:var(--gradient);box-shadow:var(--shadow-accent);}
+nav .links{display:flex;align-items:center;gap:26px;font-size:14px;color:var(--ink-2);font-weight:500;}
+nav .links a:hover{color:var(--accent);}
+
+/* hero */
+.hero{position:relative;overflow:hidden;padding:96px 0 84px;}
+.hero::before{content:"";position:absolute;width:640px;height:640px;left:-180px;top:-260px;
+  background:radial-gradient(circle,rgba(0,82,255,.10),transparent 68%);filter:blur(60px);pointer-events:none;}
+.hero .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:52px;align-items:center;position:relative;}
+.hero h1{font-size:66px;margin:22px 0 0;}
+.hero .sub{font-family:var(--sans);color:var(--ink-2);font-size:19px;margin-top:22px;max-width:34ch;}
+.hero .cta{display:flex;gap:14px;margin-top:32px;flex-wrap:wrap;}
+.hero .microcopy{margin-top:20px;color:var(--ink-3);font-size:13px;font-family:var(--mono);}
+
+/* hero graphic */
+.graphic{position:relative;height:400px;}
+.ring{position:absolute;inset:0;margin:auto;width:330px;height:330px;border-radius:50%;
+  border:1.5px dashed var(--accent-border);animation:spin 60s linear infinite;}
+.ring::after{content:"";position:absolute;top:-6px;left:50%;width:11px;height:11px;border-radius:50%;
+  background:var(--accent);box-shadow:var(--shadow-accent);transform:translateX(-50%);}
+@keyframes spin{to{transform:rotate(360deg)}}
+.gcard{position:absolute;background:#fff;border:1px solid var(--line);border-radius:14px;
+  box-shadow:var(--shadow-xl);padding:14px 16px;font-size:13px;}
+.gcard .h{display:flex;align-items:center;gap:8px;font-weight:600;font-size:12px;}
+.gcard .h .d{width:8px;height:8px;border-radius:50%;}
+.gcard .big{font-family:var(--display);font-size:22px;margin-top:6px;}
+.gcard.a{top:34px;left:6px;animation:bob 5s ease-in-out infinite;}
+.gcard.b{bottom:26px;right:0;animation:bob 4s ease-in-out infinite .6s;}
+.gcard.c{top:150px;right:44px;animation:bob 5.6s ease-in-out infinite .3s;}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-11px)}}
+.gcore{position:absolute;inset:0;margin:auto;width:118px;height:118px;border-radius:26px;background:var(--gradient);
+  box-shadow:var(--shadow-accent-lg);display:flex;align-items:center;justify-content:center;
+  color:#fff;font-family:var(--display);font-size:15px;text-align:center;line-height:1.2;}
+.dotgrid{position:absolute;bottom:8px;left:26px;display:grid;grid-template-columns:repeat(3,7px);gap:9px;opacity:.5;}
+.dotgrid span{width:7px;height:7px;border-radius:50%;background:var(--accent);}
+
+/* sections */
+section{padding:88px 0;}
+.shead{text-align:center;max-width:640px;margin:0 auto 52px;}
+.shead h2{font-size:44px;margin:16px 0 0;}
+.shead p{color:var(--ink-2);font-size:17px;margin-top:16px;}
+.center{display:flex;justify-content:center;}
+
+/* inverted stats */
+.inverted{background:#0F172A;color:#F8FAFC;border-radius:28px;position:relative;overflow:hidden;
+  padding:56px 40px;}
+.inverted::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(circle,rgba(255,255,255,.05) 1px,transparent 1px);background-size:26px 26px;}
+.inverted::after{content:"";position:absolute;width:420px;height:420px;right:-120px;bottom:-160px;
+  background:radial-gradient(circle,rgba(0,82,255,.5),transparent 70%);filter:blur(100px);}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;position:relative;z-index:1;text-align:center;}
+.stats .n{font-family:var(--display);font-size:44px;background:var(--gradient-h);-webkit-background-clip:text;
+  background-clip:text;color:transparent;}
+.stats .l{color:rgba(255,255,255,.6);font-size:13px;margin-top:6px;}
+
+/* features */
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.feat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px;position:relative;overflow:hidden;
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease);}
+.feat:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+.feat .ico{width:46px;height:46px;border-radius:13px;background:var(--gradient);display:flex;align-items:center;
+  justify-content:center;box-shadow:var(--shadow-accent);margin-bottom:16px;}
+.feat .ico svg{width:23px;height:23px;stroke:#fff;fill:none;stroke-width:2;}
+.feat h3{font-size:21px;}
+.feat p{color:var(--ink-2);font-size:14.5px;margin-top:9px;}
+
+/* pipeline timeline */
+.pipe{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;position:relative;}
+.pipe .step{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;box-shadow:var(--shadow-md);}
+.pipe .num{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.1em;}
+.pipe .step h3{font-size:18px;margin-top:8px;}
+.pipe .step p{color:var(--ink-2);font-size:13.5px;margin-top:7px;}
+.pipe .step.fail{border-color:rgba(220,38,38,.3);background:rgba(220,38,38,.03);}
+
+/* comparison */
+.cmp{border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-md);background:#fff;}
+.cmp .r{display:grid;grid-template-columns:1.4fr 1fr 1fr;border-top:1px solid var(--line);}
+.cmp .r:first-child{border-top:none;}
+.cmp .c{padding:15px 20px;font-size:14px;display:flex;align-items:center;gap:8px;}
+.cmp .head{background:var(--panel-2);font-weight:600;}
+.cmp .head .us{color:var(--accent);}
+.cmp .feature{color:var(--ink-2);}
+.cmp .no{color:var(--ink-3);} .cmp .yes{color:var(--accent);font-weight:600;}
+.cmp .r .c:nth-child(3){background:var(--accent-soft);}
+
+/* cta */
+.ctaband{background:var(--gradient);border-radius:28px;padding:64px 40px;text-align:center;color:#fff;
+  position:relative;overflow:hidden;box-shadow:var(--shadow-accent-lg);}
+.ctaband::after{content:"";position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.08) 1px,transparent 1px);background-size:26px 26px;}
+.ctaband h2{font-size:42px;color:#fff;position:relative;}
+.ctaband p{color:rgba(255,255,255,.88);font-size:17px;margin-top:14px;position:relative;}
+.ctaband .code{position:relative;margin:26px auto 0;display:inline-block;background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.25);border-radius:12px;padding:12px 20px;font-family:var(--mono);font-size:14px;}
+.ctaband .btn{margin-top:26px;position:relative;background:#fff;color:var(--accent);border:none;}
+.ctaband .btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.25);}
+
+footer{border-top:1px solid var(--line);padding:40px 0;color:var(--ink-3);font-size:13px;}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease),transform .7s var(--ease);}
+.reveal.in{opacity:1;transform:none;}
+
+@media (max-width:900px){
+  .hero .grid{grid-template-columns:1fr;} .graphic{display:none;}
+  .hero h1{font-size:46px;} .shead h2{font-size:34px;}
+  .stats{grid-template-columns:repeat(2,1fr);} .features{grid-template-columns:1fr;}
+  .pipe{grid-template-columns:1fr;} .cmp .r{grid-template-columns:1fr;}
+  .cmp .r .c:nth-child(3){background:#fff;} nav .links a:not(.btn){display:none;}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}.reveal{opacity:1;transform:none;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="dot"></span>Data Refinery</a>
+    <div class="links">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#compare">Compare</a>
+      <a class="btn primary" href="https://github.com/xbt-a4224j/enterprise_data_refinery">GitHub <span class="arrow">→</span></a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap grid">
+    <div>
+      <div class="label"><span class="pulse"></span>Trust layer for AI extraction</div>
+      <h1>Turn hostile documents into data you can <span class="gt">trust</span>.</h1>
+      <p class="sub">An LLM does the extraction. The Refinery decides whether the result is good enough to publish — eval gates that fail closed, drift detection, provenance, and cost accounting.</p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/xbt-a4224j/enterprise_data_refinery">Star on GitHub <span class="arrow">→</span></a>
+        <a class="btn" href="architecture.html">See how it works</a>
+      </div>
+      <div class="microcopy">$ docker compose up — local, model-agnostic, $0 marginal cost</div>
+    </div>
+    <div class="graphic" aria-hidden="true">
+      <div class="ring"></div>
+      <div class="gcore">trust<br>layer</div>
+      <div class="gcard a"><div class="h"><span class="d" style="background:#0052FF"></span>Extracted</div><div class="big">1,240 rows</div></div>
+      <div class="gcard b"><div class="h"><span class="d" style="background:#16a34a"></span>Gate: pass</div><div class="big">98%</div></div>
+      <div class="gcard c"><div class="h"><span class="d" style="background:#DC2626"></span>Quarantined</div><div class="big">drop #3</div></div>
+      <div class="dotgrid"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    </div>
+  </div>
+</header>
+
+<section style="padding-top:20px">
+  <div class="wrap">
+    <div class="inverted reveal">
+      <div class="stats">
+        <div><div class="n">70%</div><div class="l">is the trust layer, not the model call</div></div>
+        <div><div class="n">$0.00</div><div class="l">marginal cost, local model</div></div>
+        <div><div class="n">3</div><div class="l">AI tasks, one core: extract · triage · normalize</div></div>
+        <div><div class="n">100%</div><div class="l">of records carry provenance</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <div class="shead reveal">
+      <div class="center"><div class="label"><span class="pulse"></span>What it ships</div></div>
+      <h2>The 70% every other repo <span class="gt">skips</span>.</h2>
+      <p>Any weekend project can call a model and hand you JSON. Production needs the layer that decides whether to trust it.</p>
+    </div>
+    <div class="features reveal">
+      <div class="feat"><div class="ico"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><path d="M12 3l7 3v6c0 5-3 7-7 9-4-2-7-4-7-9V6z"/></svg></div>
+        <h3>Fail-closed gate</h3><p>Typed eval checks run before publish. If the data can't pass, it quarantines instead of shipping. Bad extraction is caught, not served.</p></div>
+      <div class="feat"><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></div>
+        <h3>Drift detection</h3><p>A source silently changes format? Schema drift is flagged and the mapping re-derived. Value drift is tracked over time.</p></div>
+      <div class="feat"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg></div>
+        <h3>Provenance</h3><p>Every published row answers: which source, run, mapping version, and checks produced it. It can defend itself to an auditor.</p></div>
+      <div class="feat"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+        <h3>Cost accounting</h3><p>$0 local vs. would-be-Claude, per run. The mapping cache skips the model on unchanged inputs — spend tracks real change.</p></div>
+      <div class="feat"><div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 17h7"/></svg></div>
+        <h3>Pack system</h3><p>A new document domain is a Pack — config, a schema, its checks. Zero core changes. Or add one from a sample in the UI, no code.</p></div>
+      <div class="feat"><div class="ico"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+        <h3>Observability</h3><p>A real admin surface: run history, live logs, a gate-failure browser, a canonical explorer. Diagnosable, not a black box.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="how" style="background:var(--panel-2);">
+  <div class="wrap">
+    <div class="shead reveal">
+      <div class="center"><div class="label"><span class="pulse"></span>The pipeline</div></div>
+      <h2>Fetch. Extract. <span class="gt">Gate.</span> Publish.</h2>
+      <p>Every run, every Pack — with the eval gate as the hinge between "extracted" and "trusted".</p>
+    </div>
+    <div class="pipe reveal">
+      <div class="step"><div class="num">01 / FETCH</div><h3>Pull &amp; cache</h3><p>Fetch raw documents on a schedule. Unchanged inputs skip the model entirely via the mapping cache.</p></div>
+      <div class="step"><div class="num">02 / EXTRACT</div><h3>Model maps</h3><p>A local or frontier model maps each document into the Pack's canonical schema, with a confidence signal.</p></div>
+      <div class="step fail"><div class="num">03 / GATE</div><h3>Trust or quarantine</h3><p>Typed checks decide. Pass → published with provenance. Fail → quarantined + alerted, last-good untouched.</p></div>
+      <div class="step"><div class="num">04 / SHIP</div><h3>Publish &amp; watch</h3><p>Clean drops export to a data repo; drift is monitored across drops for the longitudinal view.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="compare">
+  <div class="wrap">
+    <div class="shead reveal">
+      <div class="center"><div class="label"><span class="pulse"></span>The difference</div></div>
+      <h2>A weekend RAG repo vs. <span class="gt">the Refinery</span>.</h2>
+    </div>
+    <div class="cmp reveal">
+      <div class="r head"><div class="c feature" style="color:var(--ink)">Capability</div><div class="c">Typical repo</div><div class="c us">Data Refinery</div></div>
+      <div class="r"><div class="c feature">Extracts structured data</div><div class="c yes">✓</div><div class="c yes">✓</div></div>
+      <div class="r"><div class="c feature">Decides if the data is trustworthy</div><div class="c no">—</div><div class="c yes">Fail-closed gate</div></div>
+      <div class="r"><div class="c feature">Survives a silent format change</div><div class="c no">breaks</div><div class="c yes">Drift → re-map</div></div>
+      <div class="r"><div class="c feature">Auditable to a regulator</div><div class="c no">—</div><div class="c yes">Provenance per row</div></div>
+      <div class="r"><div class="c feature">Knows what it costs</div><div class="c no">—</div><div class="c yes">$0 local vs. Claude</div></div>
+      <div class="r"><div class="c feature">New domain without a rewrite</div><div class="c no">fork it</div><div class="c yes">Add a Pack</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="ctaband reveal">
+      <h2>Self-host it in one command.</h2>
+      <p>Local Docker, a local model, no paid API. Public data, public dataset, public repo.</p>
+      <div class="code">docker compose up &nbsp;·&nbsp; make migrate &nbsp;·&nbsp; edr ingest extract</div>
+      <br>
+      <a class="btn" href="https://github.com/xbt-a4224j/enterprise_data_refinery">Get it on GitHub →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>Enterprise Data Refinery · MIT licensed · the trust layer for AI extraction</div>
+    <div><a href="https://github.com/xbt-a4224j/enterprise_data_refinery" style="color:var(--accent)">GitHub</a> · <a href="architecture.html" style="color:var(--accent)">Architecture</a></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var els=document.querySelectorAll(".reveal");
+  if(!("IntersectionObserver" in window)||matchMedia("(prefers-reduced-motion: reduce)").matches){
+    els.forEach(function(e){e.classList.add("in")});return;}
+  var io=new IntersectionObserver(function(en){en.forEach(function(x){
+    if(x.isIntersecting){x.target.classList.add("in");io.unobserve(x.target);}})},{threshold:.12,rootMargin:"-50px"});
+  els.forEach(function(e){io.observe(e)});
+})();
+</script>
+</body>
+</html>

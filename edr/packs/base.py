@@ -13,8 +13,8 @@ TaskType = Literal["extract", "triage", "normalize"]
 
 class SourceSpec(BaseModel):
     name: str
-    kind: Literal["file", "http"] = "file"
-    location: str  # directory/glob for file, base URL for http
+    kind: Literal["file", "http", "socrata"] = "file"
+    location: str  # directory/glob for file, base URL for http/socrata
     options: dict[str, Any] = Field(default_factory=dict)
 
 

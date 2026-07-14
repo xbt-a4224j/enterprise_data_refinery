@@ -10,6 +10,17 @@ sources:
   - name: permits-demo
     kind: file
     location: "fixtures/*.txt"
+  - name: permits-messy
+    kind: file
+    location: "fixtures/messy/*.txt"
+  - name: permits-sf
+    kind: socrata
+    location: "https://data.sfgov.org/resource/i98e-djp9.json"
+    options: { limit: 20 }
+  - name: permits-nyc
+    kind: socrata
+    location: "https://data.cityofnewyork.us/resource/ipu4-2q9a.json"
+    options: { limit: 20 }
 checks:
   null_rate:
     max: { permit_id: 0.0, valuation_usd: 0.5 }

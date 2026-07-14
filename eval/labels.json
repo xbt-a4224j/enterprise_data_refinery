@@ -1,0 +1,218 @@
+{
+  "permit_00.txt": {
+    "permit_id": "BP-2026-04000",
+    "jurisdiction": "Springfield",
+    "permit_type": "Residential Alteration",
+    "status": "Issued",
+    "issued_date": "2026-01-01",
+    "valuation_usd": 15000.0,
+    "applicant": "Rivera Construction LLC"
+  },
+  "permit_01.txt": {
+    "permit_id": "BP-2026-04037",
+    "jurisdiction": "Delaware County",
+    "permit_type": "Commercial New Construction",
+    "status": "Under Review",
+    "issued_date": "2026-02-04",
+    "valuation_usd": 56000.0,
+    "applicant": "Keystone Developers Inc"
+  },
+  "permit_02.txt": {
+    "permit_id": "BP-2026-04074",
+    "jurisdiction": "Cary",
+    "permit_type": "Residential Solar",
+    "status": "Finaled",
+    "issued_date": "2026-03-07",
+    "valuation_usd": 97000.0,
+    "applicant": "SunFair Energy"
+  },
+  "permit_03.txt": {
+    "permit_id": "BP-2026-04111",
+    "jurisdiction": "Lakewood",
+    "permit_type": "Demolition",
+    "status": "Expired",
+    "issued_date": "2026-04-10",
+    "valuation_usd": 138000.0,
+    "applicant": "Clearway Demolition"
+  },
+  "permit_04.txt": {
+    "permit_id": "BP-2026-04148",
+    "jurisdiction": "Media",
+    "permit_type": "Electrical",
+    "status": "Approved",
+    "issued_date": "2026-05-13",
+    "valuation_usd": 179000.0,
+    "applicant": "Homefront Builders"
+  },
+  "permit_05.txt": {
+    "permit_id": "BP-2026-04185",
+    "jurisdiction": "Riverside",
+    "permit_type": "Plumbing",
+    "status": "Issued",
+    "issued_date": "2026-06-16",
+    "valuation_usd": 220000.0,
+    "applicant": "Apex Mechanical"
+  },
+  "permit_06.txt": {
+    "permit_id": "BP-2026-04222",
+    "jurisdiction": "Franklin",
+    "permit_type": "Roofing",
+    "status": "Under Review",
+    "issued_date": "2026-07-19",
+    "valuation_usd": 261000.0,
+    "applicant": "Blue Ridge Roofing"
+  },
+  "permit_07.txt": {
+    "permit_id": "BP-2026-04259",
+    "jurisdiction": "Auburn",
+    "permit_type": "Mechanical",
+    "status": "Finaled",
+    "issued_date": "2026-08-22",
+    "valuation_usd": 302000.0,
+    "applicant": "Rivera Construction LLC"
+  },
+  "permit_08.txt": {
+    "permit_id": "BP-2026-04296",
+    "jurisdiction": "Kingsport",
+    "permit_type": "Residential Alteration",
+    "status": "Expired",
+    "issued_date": "2026-09-25",
+    "valuation_usd": 343000.0,
+    "applicant": "Keystone Developers Inc"
+  },
+  "permit_09.txt": {
+    "permit_id": "BP-2026-04333",
+    "jurisdiction": "Bristol",
+    "permit_type": "Commercial New Construction",
+    "status": "Approved",
+    "issued_date": "2026-01-01",
+    "valuation_usd": 384000.0,
+    "applicant": "SunFair Energy"
+  },
+  "permit_10.txt": {
+    "permit_id": "BP-2026-04370",
+    "jurisdiction": "Salem",
+    "permit_type": "Residential Solar",
+    "status": "Issued",
+    "issued_date": "2026-02-04",
+    "valuation_usd": 425000.0,
+    "applicant": "Clearway Demolition"
+  },
+  "permit_11.txt": {
+    "permit_id": "BP-2026-04407",
+    "jurisdiction": "Dover",
+    "permit_type": "Demolition",
+    "status": "Under Review",
+    "issued_date": "2026-03-07",
+    "valuation_usd": 466000.0,
+    "applicant": "Homefront Builders"
+  },
+  "permit_12.txt": {
+    "permit_id": "BP-2026-04444",
+    "jurisdiction": "Springfield",
+    "permit_type": "Electrical",
+    "status": "Finaled",
+    "issued_date": "2026-04-10",
+    "valuation_usd": 507000.0,
+    "applicant": "Apex Mechanical"
+  },
+  "permit_13.txt": {
+    "permit_id": "BP-2026-04481",
+    "jurisdiction": "Delaware County",
+    "permit_type": "Plumbing",
+    "status": "Expired",
+    "issued_date": "2026-05-13",
+    "valuation_usd": 548000.0,
+    "applicant": "Blue Ridge Roofing"
+  },
+  "permit_14.txt": {
+    "permit_id": "BP-2026-04518",
+    "jurisdiction": "Cary",
+    "permit_type": "Roofing",
+    "status": "Approved",
+    "issued_date": "2026-06-16",
+    "valuation_usd": 589000.0,
+    "applicant": "Rivera Construction LLC"
+  },
+  "permit_15.txt": {
+    "permit_id": "BP-2026-04555",
+    "jurisdiction": "Lakewood",
+    "permit_type": "Mechanical",
+    "status": "Issued",
+    "issued_date": "2026-07-19",
+    "valuation_usd": 630000.0,
+    "applicant": "Keystone Developers Inc"
+  },
+  "permit_16.txt": {
+    "permit_id": "BP-2026-04592",
+    "jurisdiction": "Media",
+    "permit_type": "Residential Alteration",
+    "status": "Under Review",
+    "issued_date": "2026-08-22",
+    "valuation_usd": 671000.0,
+    "applicant": "SunFair Energy"
+  },
+  "permit_17.txt": {
+    "permit_id": "BP-2026-04629",
+    "jurisdiction": "Riverside",
+    "permit_type": "Commercial New Construction",
+    "status": "Finaled",
+    "issued_date": "2026-09-25",
+    "valuation_usd": 712000.0,
+    "applicant": "Clearway Demolition"
+  },
+  "permit_18.txt": {
+    "permit_id": "BP-2026-04666",
+    "jurisdiction": "Franklin",
+    "permit_type": "Residential Solar",
+    "status": "Expired",
+    "issued_date": "2026-01-01",
+    "valuation_usd": 753000.0,
+    "applicant": "Homefront Builders"
+  },
+  "permit_19.txt": {
+    "permit_id": "BP-2026-04703",
+    "jurisdiction": "Auburn",
+    "permit_type": "Demolition",
+    "status": "Approved",
+    "issued_date": "2026-02-04",
+    "valuation_usd": 794000.0,
+    "applicant": "Apex Mechanical"
+  },
+  "permit_20.txt": {
+    "permit_id": "BP-2026-04740",
+    "jurisdiction": "Kingsport",
+    "permit_type": "Electrical",
+    "status": "Issued",
+    "issued_date": "2026-03-07",
+    "valuation_usd": 835000.0,
+    "applicant": "Blue Ridge Roofing"
+  },
+  "permit_21.txt": {
+    "permit_id": "BP-2026-04777",
+    "jurisdiction": "Bristol",
+    "permit_type": "Plumbing",
+    "status": "Under Review",
+    "issued_date": "2026-04-10",
+    "valuation_usd": 876000.0,
+    "applicant": "Rivera Construction LLC"
+  },
+  "permit_22.txt": {
+    "permit_id": "BP-2026-04814",
+    "jurisdiction": "Salem",
+    "permit_type": "Roofing",
+    "status": "Finaled",
+    "issued_date": "2026-05-13",
+    "valuation_usd": 917000.0,
+    "applicant": "Keystone Developers Inc"
+  },
+  "permit_23.txt": {
+    "permit_id": "BP-2026-04851",
+    "jurisdiction": "Dover",
+    "permit_type": "Mechanical",
+    "status": "Expired",
+    "issued_date": "2026-06-16",
+    "valuation_usd": 958000.0,
+    "applicant": "SunFair Energy"
+  }
+}

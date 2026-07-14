@@ -1,0 +1,8 @@
+MEDIA COUNTY PERMIT RECORD
+Permit ID: BP-2026-04148
+Address: 38 Elm St, Media
+Permit Type: Electrical
+Current Status: Approved
+Issued: 2026-05-13
+Valuation: $179,000
+Applicant Name: Homefront Builders

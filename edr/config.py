@@ -23,6 +23,9 @@ class Settings(BaseSettings):
     admin_token: str = "change-me"
     slack_webhook: str = ""
 
+    # Pipeline
+    extract_concurrency: int = 4  # parallel in-flight LLM extractions per source run
+
 
 @lru_cache
 def get_settings() -> Settings:

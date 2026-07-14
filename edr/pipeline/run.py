@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import hashlib
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
@@ -11,10 +12,11 @@ from pathlib import Path
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from edr.config import get_settings
 from edr.llm.base import LLMProvider
 from edr.models import Canonical, Drop, MappingCache, Run, Source
 from edr.packs.adapters import build_adapter
-from edr.packs.base import LoadedPack
+from edr.packs.base import LoadedPack, RawDoc
 from edr.pipeline.drift import detect_drift
 from edr.pipeline.extract import extract_document
 from edr.pipeline.gate import evaluate_drop
@@ -58,42 +60,75 @@ def run_source(
     cost = 0.0
     failures: list[str] = []
 
+    # Fetch documents (cheap I/O); a bad fetch must not sink the whole run.
+    docs: list[RawDoc] = []
     for ref in refs:
         try:
-            doc = adapter.fetch(ref)
-        except Exception as e:  # noqa: BLE001  one bad doc must not sink the whole run
+            docs.append(adapter.fetch(ref))
+        except Exception as e:  # noqa: BLE001
             failures.append(f"fetch {ref}: {e}")
-            continue
-        dh = _hash(doc.content)
+
+    order = [(doc, _hash(doc.content)) for doc in docs]
+    doc_by_hash = {h: d for d, h in order}
+
+    # Resolve each unique document: DB cache hit, or queue for extraction.
+    # DB reads stay on the main thread (the SQLAlchemy session is not thread-safe).
+    resolved: dict[str, dict] = {}
+    to_extract: list[tuple[str, RawDoc]] = []
+    for dh in dict.fromkeys(h for _, h in order):
         cached = session.scalar(
             select(MappingCache).where(
                 MappingCache.source_id == source.id, MappingCache.schema_hash == dh
             )
         )
         if cached is not None:
-            doc_hashes.append(dh)
-            records.append(cached.plan["record"])
-            low_flags.append(cached.plan.get("low_confidence", False))
-            cache_hits += 1
+            resolved[dh] = {
+                "record": cached.plan["record"],
+                "low": cached.plan.get("low_confidence", False), "cached": True,
+            }
+        else:
+            to_extract.append((dh, doc_by_hash[dh]))
+
+    # Extract cache-misses in parallel — pure, I/O-bound LLM work, no DB access.
+    if to_extract:
+        workers = min(max(1, get_settings().extract_concurrency), len(to_extract))
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            futures = {pool.submit(extract_document, pack, provider, doc): dh
+                       for dh, doc in to_extract}
+            for fut in as_completed(futures):
+                dh = futures[fut]
+                try:
+                    record, low_conf, res = fut.result()
+                    resolved[dh] = {"record": record, "low": low_conf, "cached": False, "res": res}
+                except Exception as e:  # noqa: BLE001
+                    resolved[dh] = {"error": str(e)}
+
+    # Persist the mapping cache + tally cost once per newly-extracted document.
+    for dh, _doc in to_extract:
+        r = resolved.get(dh, {})
+        if r.get("error"):
             continue
-        try:
-            record, low_conf, res = extract_document(pack, provider, doc)
-        except Exception as e:  # noqa: BLE001
-            failures.append(f"extract {ref}: {e}")
-            continue
-        doc_hashes.append(dh)
+        res = r["res"]
         llm_calls += 1
         tokens_in += res.tokens_in
         tokens_out += res.tokens_out
         cost += res.would_be_claude_usd
-        records.append(record)
-        low_flags.append(low_conf)
-        session.add(
-            MappingCache(
-                source_id=source.id, schema_hash=dh,
-                plan={"record": record, "low_confidence": low_conf},
-            )
-        )
+        session.add(MappingCache(
+            source_id=source.id, schema_hash=dh,
+            plan={"record": r["record"], "low_confidence": r["low"]},
+        ))
+
+    # Assemble canonical rows in original document order.
+    for doc, dh in order:
+        r = resolved.get(dh)
+        if r is None or r.get("error"):
+            failures.append(f"extract {doc.ref}: {r.get('error') if r else 'unresolved'}")
+            continue
+        doc_hashes.append(dh)
+        records.append(r["record"])
+        low_flags.append(r["low"])
+        if r["cached"]:
+            cache_hits += 1
 
     # Every document failed -> failed run, no drop, last-good published data untouched.
     if refs and not records:

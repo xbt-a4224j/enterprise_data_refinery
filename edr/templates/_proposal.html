@@ -1,0 +1,10 @@
+<div class="card"><div class="hd"><h3>Proposed schema for “{{ name }}”</h3></div><div class="bd">
+  <table><thead><tr><th>Field</th><th>Type</th></tr></thead><tbody>
+  {% for f in fields %}<tr><td class="mono">{{ f.name }}</td><td class="muted">{{ f.type }}</td></tr>{% endfor %}
+  </tbody></table>
+  <form method="post" action="/wizard/save" style="margin-top:14px">
+    <input type="hidden" name="name" value="{{ name }}">
+    <input type="hidden" name="sample" value="{{ sample|e }}">
+    <button class="btn primary">Save pack → packs/{{ name|lower }}/</button>
+  </form>
+</div></div>

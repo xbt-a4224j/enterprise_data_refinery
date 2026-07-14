@@ -179,3 +179,22 @@ def login(request: Request, token: str = Form("")):
         resp.set_cookie(COOKIE, token, httponly=True, samesite="lax")
         return resp
     return RedirectResponse("/login?e=1", status_code=303)
+
+
+@router.post("/wizard/propose", response_class=HTMLResponse)
+def wizard_propose(request: Request, name: str = Form(""), sample: str = Form(""),
+                   _: bool = Depends(require_admin)):
+    from edr.llm.base import get_provider
+    from edr.web.wizard import propose_fields
+    fields = propose_fields(get_provider() if sample else None, sample)
+    return TEMPLATES.TemplateResponse(
+        request, "_proposal.html", {"name": name, "sample": sample, "fields": fields}
+    )
+
+
+@router.post("/wizard/save")
+def wizard_save(request: Request, name: str = Form(...), sample: str = Form(""),
+                _: bool = Depends(require_admin)):
+    from edr.web.wizard import propose_fields, write_pack
+    write_pack(name, propose_fields(None, sample), sample)
+    return RedirectResponse("/sources", status_code=303)

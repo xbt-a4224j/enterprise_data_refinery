@@ -38,10 +38,11 @@ Rich diagrams: [`docs/architecture.html`](docs/architecture.html).
 Everything is local Docker with a local model (Ollama). No paid API required.
 
 ```bash
-docker compose up -d db
+docker compose up -d db ollama
+docker compose exec ollama ollama pull qwen2.5:7b   # first run only (~5GB); the container starts empty
 make migrate
-uv run python -m edr.cli ingest extract     # runs the flagship pack end to end
-docker compose up app                        # admin UI at http://localhost:8000
+uv run python -m edr.cli ingest extract              # runs the flagship pack end to end
+docker compose up app                                # admin UI at http://localhost:8000
 ```
 
 A real run on a local 14B-class model looks like this — including the trust layer doing its job:

@@ -1,0 +1,14 @@
+# Copy this directory to packs/<your-name>/ and edit. Auto-discovered on startup.
+name: _template
+task_type: extract            # extract | triage | normalize
+cadence: manual
+schema_ref: CanonicalRecord   # the BaseModel in schema.py to target
+instructions: >
+  Describe to the model what to extract/classify/normalize, field by field.
+sources:
+  - name: example
+    kind: file                # file | http
+    location: "fixtures/*.txt"
+checks:
+  null_rate:
+    max: {}

@@ -1,0 +1,17 @@
+name: extract
+task_type: extract
+cadence: daily
+schema_ref: PermitRecord
+instructions: >
+  Extract building-permit fields from the document. Return permit_id, address,
+  jurisdiction, permit_type, status, issued_date (YYYY-MM-DD), valuation_usd (number),
+  applicant, and description. Use null for anything not present.
+sources:
+  - name: permits-demo
+    kind: file
+    location: "fixtures/*.txt"
+checks:
+  null_rate:
+    max: { permit_id: 0.0, valuation_usd: 0.5 }
+  row_count_delta:
+    max_growth: 0.5

@@ -1,0 +1,25 @@
+name: CI
+on:
+  push: { branches: [main] }
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env: { POSTGRES_USER: edr, POSTGRES_PASSWORD: edr, POSTGRES_DB: edr }
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U edr" --health-interval 5s
+          --health-timeout 3s --health-retries 10
+    env:
+      EDR_DATABASE_URL: postgresql+psycopg://edr:edr@localhost:5432/edr
+      EDR_LLM_PROVIDER: fake
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - run: uv sync
+      - run: uv run alembic upgrade head
+      - run: uv run ruff check .
+      - run: uv run pytest

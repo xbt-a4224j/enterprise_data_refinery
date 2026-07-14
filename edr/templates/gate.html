@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block subtitle %}<p>Drops the gate refused to publish — the failure is captured, not shipped. This is the difference between a demo and production.</p>{% endblock %}
+{% block content %}
+{% if items %}
+<div class="stack">
+{% for drop, fails in items %}
+  <div class="card"><div class="hd">
+    <div class="row"><span class="badge quarantined">quarantined</span> <b>Drop #{{ drop.id }}</b>
+      <span class="muted mono">{{ drop.content_hash[:12] }}</span></div>
+    <a class="btn sm" href="/sources/{{ drop.source_id }}">Source</a>
+  </div><div class="bd flush">
+    <table><thead><tr><th>Failed check</th><th>Offending rows</th><th>Detail</th></tr></thead><tbody>
+    {% for f in fails %}<tr><td><span class="badge failed">{{ f.check_name }}</span></td>
+      <td class="num">{{ f.detail.get('offending', [])|length }}</td>
+      <td class="muted mono">{{ f.detail }}</td></tr>{% endfor %}
+    </tbody></table>
+  </div></div>
+{% endfor %}
+</div>
+{% else %}
+<div class="empty"><div class="big">Nothing quarantined</div>Every drop so far passed the gate. New failures appear here with the exact rows that broke.</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card" style="max-width:380px"><div class="bd">
+  <form method="post" action="/login" class="stack">
+    <label class="muted">Admin token</label>
+    <input type="password" name="token" autofocus>
+    <button class="btn primary" type="submit">Sign in</button>
+  </form>
+  <p class="muted" style="margin-top:12px;font-size:12px">Read-only pages are public; enabling sources and saving packs require the token.</p>
+</div></div>
+{% endblock %}

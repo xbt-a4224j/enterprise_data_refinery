@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block subtitle %}<p>Each source is one feed inside a pack. {% if not admin %}<a href="/login">Sign in</a> to enable/disable.{% endif %}</p>{% endblock %}
+{% block content %}
+<div class="card"><div class="bd flush">
+{% if rows %}
+<table><thead><tr><th>Source</th><th>Pack</th><th>Cadence</th><th>State</th><th class="num">Rows</th><th></th></tr></thead><tbody>
+{% for r in rows %}
+<tr>
+  <td><a href="/sources/{{ r.id }}">{{ r.name }}</a></td>
+  <td>{{ r.pack_name }}</td>
+  <td class="muted">{{ r.cadence }}</td>
+  <td><span class="badge {{ 'ok' if r.enabled else 'plain' }}">{{ 'enabled' if r.enabled else 'disabled' }}</span></td>
+  <td class="num">{{ counts.get(r.id, 0) }}</td>
+  <td>{% if admin %}<form method="post" action="/sources/{{ r.id }}/toggle"><button class="btn sm">{{ 'Disable' if r.enabled else 'Enable' }}</button></form>{% endif %}</td>
+</tr>
+{% endfor %}
+</tbody></table>
+{% else %}<div class="empty"><div class="big">No sources</div>Sources are created when a pack first runs.</div>{% endif %}
+</div></div>
+{% endblock %}

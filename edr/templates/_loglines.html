@@ -1,0 +1,7 @@
+{% for l in logs %}
+<div class="logline"><span class="muted">{{ l.ts.strftime('%Y-%m-%d %H:%M:%S') if l.ts else '' }}</span>
+<span class="lvl {{ l.level }}">{{ l.level }}</span>
+<span>{{ l.message }}{% if l.context %} <span class="muted">{{ l.context }}</span>{% endif %}</span></div>
+{% else %}
+<div class="empty"><div class="big">No log events</div></div>
+{% endfor %}

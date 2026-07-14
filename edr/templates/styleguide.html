@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block subtitle %}<p>Every primitive, one page — so the UI stays one coherent system.</p>{% endblock %}
+{% block content %}
+<div class="stack">
+  <div class="card"><div class="hd"><h2>Status badges</h2></div><div class="bd row" style="flex-wrap:wrap;gap:8px">
+    {% for s in ['published','ok','running','degraded','pending','quarantined','failed','info','plain'] %}
+    <span class="badge {{ s }}">{{ s }}</span>{% endfor %}
+  </div></div>
+  <div class="card"><div class="hd"><h2>Buttons</h2></div><div class="bd row" style="gap:10px">
+    <button class="btn primary">Primary</button><button class="btn">Secondary</button><button class="btn sm">Small</button>
+  </div></div>
+  <div class="grid tiles">
+    <div class="tile"><div class="k">Metric</div><div class="v good">98%</div><div class="sub">supporting text</div></div>
+    <div class="tile"><div class="k">Metric</div><div class="v warn">3</div><div class="sub">supporting text</div></div>
+    <div class="tile"><div class="k">Metric</div><div class="v">1,240</div><div class="sub">supporting text</div></div>
+  </div>
+  <div class="card"><div class="hd"><h2>Table</h2></div><div class="bd flush">
+    <table><thead><tr><th>Col</th><th>Status</th><th class="num">Number</th></tr></thead><tbody>
+    <tr><td>Row one</td><td><span class="badge ok">ok</span></td><td class="num">42</td></tr>
+    <tr><td>Row two</td><td><span class="badge failed">failed</span></td><td class="num">7</td></tr>
+    </tbody></table>
+  </div></div>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block subtitle %}<p>Canonical-driven views. They work for any pack because they read the shared schema, evals, and drift — not pack-specific code.</p>{% endblock %}
+{% block content %}
+<div class="grid" style="grid-template-columns:1fr 1fr; align-items:start">
+  <div class="card"><div class="hd"><h2>Value variation</h2></div><div class="bd">
+    {% if variation %}
+    <div class="row between"><div><div class="muted">Spread across {{ variation.n }} records</div>
+      <div style="font-size:24px;font-weight:680">{{ '%.1f×'|format(variation.spread) if variation.spread else '—' }}</div></div></div>
+    <dl class="kv" style="margin-top:10px"><dt>Min</dt><dd>${{ '{:,.0f}'.format(variation.min) }}</dd>
+      <dt>Max</dt><dd>${{ '{:,.0f}'.format(variation.max) }}</dd></dl>
+    {% else %}<div class="empty">No numeric field to compare yet.</div>{% endif %}
+  </div></div>
+  <div class="card"><div class="hd"><h2>Change over time (drift)</h2></div><div class="bd flush">
+    {% if drift %}<table><thead><tr><th>Kind</th><th>Detail</th></tr></thead><tbody>
+    {% for d in drift %}<tr><td><span class="badge warning">{{ d.kind }}</span></td><td class="muted mono">{{ d.detail }}</td></tr>{% endfor %}
+    </tbody></table>{% else %}<div class="empty">No drift recorded yet — it appears as drops accumulate.</div>{% endif %}
+  </div></div>
+</div>
+<div class="card" style="margin-top:14px"><div class="hd"><h2>Data-quality scorecard</h2></div><div class="bd flush">
+  <table><thead><tr><th>Source</th><th class="num">Published</th><th class="num">Quarantined</th><th>Pass rate</th></tr></thead><tbody>
+  {% for s in scorecard %}<tr><td>{{ s.src.name }}</td><td class="num">{{ s.pub }}</td><td class="num">{{ s.quar }}</td>
+    <td>{% if s.rate is not none %}<div class="row"><div class="bar" style="width:120px"><i style="width:{{ s.rate }}%"></i></div>
+      <span class="muted">{{ '%.0f%%'|format(s.rate) }}</span></div>{% else %}—{% endif %}</td></tr>{% endfor %}
+  </tbody></table>
+</div></div>
+{% endblock %}

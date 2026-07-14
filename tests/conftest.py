@@ -6,6 +6,7 @@ os.environ.setdefault("EDR_LLM_PROVIDER", "fake")
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 
 import edr.models  # noqa: F401  register mappers
 from edr.db import Base
@@ -13,7 +14,12 @@ from edr.db import Base
 
 @pytest.fixture
 def db_session():
-    eng = create_engine("sqlite://", future=True)
+    # StaticPool + check_same_thread=False so the in-memory DB is shared across
+    # FastAPI's threadpool workers (sync route handlers run off-thread).
+    eng = create_engine(
+        "sqlite://", future=True,
+        connect_args={"check_same_thread": False}, poolclass=StaticPool,
+    )
     Base.metadata.create_all(eng)
     Session = sessionmaker(bind=eng, expire_on_commit=False, future=True)
     sess = Session()

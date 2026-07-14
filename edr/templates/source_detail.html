@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+{% if not src %}<div class="empty"><div class="big">Source not found</div></div>{% else %}
+<div class="grid" style="grid-template-columns:1fr 1fr; align-items:start">
+  <div class="card"><div class="hd"><h2>Configuration</h2>
+    <span class="badge {{ 'ok' if src.enabled else 'plain' }}">{{ 'enabled' if src.enabled else 'disabled' }}</span></div>
+    <div class="bd"><dl class="kv">
+      <dt>Pack</dt><dd>{{ src.pack_name }}</dd><dt>Cadence</dt><dd>{{ src.cadence }}</dd>
+      <dt>Config</dt><dd>{{ src.config }}</dd></dl></div></div>
+  <div class="card"><div class="hd"><h2>Drift history</h2></div><div class="bd flush">
+    {% if drift %}<table><thead><tr><th>Kind</th><th>Detail</th></tr></thead><tbody>
+    {% for d in drift %}<tr><td><span class="badge warning">{{ d.kind }}</span></td><td class="muted mono">{{ d.detail }}</td></tr>{% endfor %}
+    </tbody></table>{% else %}<div class="empty">No drift detected.</div>{% endif %}
+  </div></div>
+</div>
+<div class="card" style="margin-top:14px"><div class="hd"><h2>Drops</h2></div><div class="bd flush">
+  <table><thead><tr><th>Drop</th><th>Date</th><th>Status</th><th>Mapping</th></tr></thead><tbody>
+  {% for d in drops %}<tr><td>#{{ d.id }}</td><td class="muted">{{ d.drop_date }}</td>
+    <td><span class="badge {{ d.status }}">{{ d.status }}</span></td><td class="mono muted">{{ d.mapping_version }}</td></tr>{% endfor %}
+  </tbody></table>
+</div></div>
+{% endif %}
+{% endblock %}

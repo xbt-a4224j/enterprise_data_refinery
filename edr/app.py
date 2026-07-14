@@ -2,17 +2,16 @@
 
 from pathlib import Path
 
-from fastapi import Depends, FastAPI, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi import Depends, FastAPI
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from edr.db import get_session
+from edr.web.routes import router
 
 BASE_DIR = Path(__file__).parent
-TEMPLATES = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 
 def create_app() -> FastAPI:
@@ -31,10 +30,7 @@ def create_app() -> FastAPI:
             db_ok = False
         return JSONResponse({"status": "ok", "db": db_ok})
 
-    @app.get("/", response_class=HTMLResponse)
-    def index(request: Request) -> HTMLResponse:
-        return TEMPLATES.TemplateResponse(request, "base.html", {"title": "Overview"})
-
+    app.include_router(router)
     return app
 
 

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+{% if not run %}<div class="empty"><div class="big">Run not found</div></div>{% else %}
+<div class="row between" style="margin-bottom:16px">
+  <span class="badge {{ run.status }}">{{ run.status }}</span>
+  <span class="muted">{{ run.started_at.strftime('%Y-%m-%d %H:%M:%S') if run.started_at else '' }}</span>
+</div>
+<div class="grid" style="grid-template-columns:1fr 1fr; align-items:start">
+  <div class="card"><div class="hd"><h2>Summary</h2></div><div class="bd">
+    <dl class="kv">
+      <dt>Pack</dt><dd>{{ run.pack_name }}</dd>
+      <dt>Tokens in / out</dt><dd>{{ run.tokens_in }} / {{ run.tokens_out }}</dd>
+      <dt>Would-be Claude</dt><dd>${{ '%.4f'|format(run.cost_usd) }}</dd>
+      <dt>Local cost</dt><dd>$0.0000</dd>
+      {% if run.meta %}<dt>Notes</dt><dd>{{ run.meta }}</dd>{% endif %}
+    </dl>
+  </div></div>
+  <div class="card"><div class="hd"><h2>Drops</h2></div><div class="bd flush">
+    <table><thead><tr><th>Drop</th><th>Status</th><th>Hash</th></tr></thead><tbody>
+    {% for d in drops %}<tr><td>#{{ d.id }}</td><td><span class="badge {{ d.status }}">{{ d.status }}</span></td>
+      <td class="mono muted">{{ d.content_hash[:12] }}</td></tr>{% endfor %}
+    </tbody></table>
+  </div></div>
+</div>
+<div class="card" style="margin-top:14px"><div class="hd"><h2>Eval gate</h2></div><div class="bd flush">
+  <table><thead><tr><th>Check</th><th>Result</th><th>Detail</th></tr></thead><tbody>
+  {% for c in checks %}<tr><td>{{ c.check_name }}</td>
+    <td><span class="badge {{ 'ok' if c.passed else 'failed' }}">{{ 'pass' if c.passed else 'fail' }}</span></td>
+    <td class="muted mono">{{ c.detail }}</td></tr>{% endfor %}
+  </tbody></table>
+</div></div>
+{% endif %}
+{% endblock %}

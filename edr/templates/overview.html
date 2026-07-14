@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block subtitle %}<p>Live health of the refinery: what's fresh, what the gate is catching, and what it would cost on a frontier model.</p>{% endblock %}
+{% block content %}
+<div class="grid tiles" style="margin-bottom:18px">
+  <div class="tile"><div class="k">Gate pass rate</div>
+    <div class="v {{ 'good' if (m.pass_rate or 0) >= 90 else 'warn' }}">{{ '%.0f%%'|format(m.pass_rate) if m.pass_rate is not none else '—' }}</div>
+    <div class="sub">{{ m.published }} published · {{ m.quarantined }} quarantined</div></div>
+  <div class="tile"><div class="k">Sources</div><div class="v">{{ m.enabled }}<span class="muted" style="font-size:15px">/{{ m.sources }}</span></div><div class="sub">enabled / total</div></div>
+  <div class="tile"><div class="k">Open drift events</div><div class="v {{ 'warn' if m.drift else '' }}">{{ m.drift }}</div><div class="sub">schema + value shifts caught</div></div>
+  <div class="tile"><div class="k">Canonical rows</div><div class="v">{{ '{:,}'.format(m.rows) }}</div><div class="sub">trustworthy, provenanced</div></div>
+  <div class="tile"><div class="k">Cost (local)</div><div class="v good">$0.00</div><div class="sub">would-be Claude: ${{ '%.4f'|format(m.would_be_claude) }}</div></div>
+</div>
+
+<div class="card">
+  <div class="hd"><h2>Recent runs</h2><a class="btn sm" href="/runs">All runs</a></div>
+  <div class="bd flush">
+    {% if runs %}
+    <table>
+      <thead><tr><th>Run</th><th>Pack</th><th>Status</th><th class="num">Tokens</th><th class="num">Would-be $</th><th>When</th></tr></thead>
+      <tbody>
+        {% for r in runs %}
+        <tr>
+          <td><a href="/runs/{{ r.id }}">#{{ r.id }}</a></td>
+          <td>{{ r.pack_name }}</td>
+          <td><span class="badge {{ r.status }}">{{ r.status }}</span></td>
+          <td class="num">{{ r.tokens_in }}/{{ r.tokens_out }}</td>
+          <td class="num">${{ '%.4f'|format(r.cost_usd) }}</td>
+          <td class="muted">{{ r.started_at.strftime('%b %d %H:%M') if r.started_at else '—' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="empty"><div class="big">No runs yet</div>Run <code>python -m edr.cli ingest extract</code> to produce the first drop.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

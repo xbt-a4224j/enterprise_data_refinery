@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block topbar_actions %}<span class="htmx-indicator spinner"></span>{% endblock %}
+{% block subtitle %}<p>Structured events, streaming live. <span class="muted">Auto-refreshes every 3s.</span></p>{% endblock %}
+{% block content %}
+<div class="tabs">
+  <a href="/logs" class="{{ 'active' if not level }}">All</a>
+  <a href="/logs?level=info" class="{{ 'active' if level=='info' }}">Info</a>
+  <a href="/logs?level=warning" class="{{ 'active' if level=='warning' }}">Warning</a>
+  <a href="/logs?level=error" class="{{ 'active' if level=='error' }}">Error</a>
+</div>
+<div class="card"><div class="bd flush"
+  hx-get="/logs/stream?level={{ level }}" hx-trigger="load, every 3s" hx-swap="innerHTML">
+  {% include "_loglines.html" %}
+</div></div>
+{% endblock %}

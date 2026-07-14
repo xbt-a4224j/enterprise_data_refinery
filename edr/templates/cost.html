@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block subtitle %}<p>The pipeline runs on a local model at $0 marginal cost. This is what the same work would cost on Claude — the build-vs-buy call, made concrete.</p>{% endblock %}
+{% block content %}
+<div class="grid tiles" style="margin-bottom:16px">
+  <div class="tile"><div class="k">Local spend</div><div class="v good">$0.00</div><div class="sub">Ollama, on your machine</div></div>
+  <div class="tile"><div class="k">Would-be Claude</div><div class="v">${{ '%.4f'|format(m.would_be_claude) }}</div><div class="sub">at list prices</div></div>
+  <div class="tile"><div class="k">Tokens in / out</div><div class="v" style="font-size:20px">{{ '{:,}'.format(m.tokens_in) }} / {{ '{:,}'.format(m.tokens_out) }}</div></div>
+</div>
+<div class="card"><div class="hd"><h2>By pack</h2></div><div class="bd flush">
+  <table><thead><tr><th>Pack</th><th class="num">Runs</th><th class="num">Tokens in</th><th class="num">Tokens out</th><th class="num">Would-be $</th></tr></thead><tbody>
+  {% for name, tin, tout, c, n in per_pack %}<tr><td>{{ name }}</td><td class="num">{{ n }}</td>
+    <td class="num">{{ '{:,}'.format(tin or 0) }}</td><td class="num">{{ '{:,}'.format(tout or 0) }}</td>
+    <td class="num">${{ '%.4f'|format(c or 0) }}</td></tr>{% endfor %}
+  </tbody></table>
+</div></div>
+<p class="muted" style="margin-top:14px">Token spend tracks real schema changes, not run count — the mapping cache skips the model on unchanged inputs.</p>
+{% endblock %}

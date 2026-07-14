@@ -3,15 +3,57 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ title|default("Enterprise Data Refinery") }}</title>
+  <title>{{ title }} · Enterprise Data Refinery</title>
   <link rel="stylesheet" href="/static/app.css">
+  <script>
+    (function () {
+      const t = localStorage.getItem("edr-theme");
+      if (t) document.documentElement.setAttribute("data-theme", t);
+    })();
+  </script>
+  <script src="/static/htmx.min.js" defer></script>
 </head>
 <body>
-  <main class="wrap">
-    {% block content %}
-    <h1>Enterprise Data Refinery</h1>
-    <p>Hostile documents in, trustworthy structured data out.</p>
-    {% endblock %}
-  </main>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="/">
+      <span class="dot"></span>
+      <span><b>Data Refinery</b><span>trust layer for AI extraction</span></span>
+    </a>
+    <nav class="nav" aria-label="Primary">
+      {% set p = active|default('') %}
+      <div class="group">Operate</div>
+      <a href="/" class="{{ 'active' if p=='overview' }}">Overview</a>
+      <a href="/runs" class="{{ 'active' if p=='runs' }}">Runs</a>
+      <a href="/gate" class="{{ 'active' if p=='gate' }}">Gate failures</a>
+      <a href="/logs" class="{{ 'active' if p=='logs' }}">System logs</a>
+      <div class="group">Data</div>
+      <a href="/sources" class="{{ 'active' if p=='sources' }}">Sources</a>
+      <a href="/explore" class="{{ 'active' if p=='explore' }}">Explorer</a>
+      <a href="/outputs" class="{{ 'active' if p=='outputs' }}">Outputs</a>
+      <a href="/cost" class="{{ 'active' if p=='cost' }}">Cost</a>
+      <div class="group">Build</div>
+      <a href="/wizard" class="{{ 'active' if p=='wizard' }}">Add a source</a>
+      <a href="/styleguide" class="{{ 'active' if p=='styleguide' }}">Style guide</a>
+    </nav>
+  </aside>
+  <div class="content">
+    <header class="topbar">
+      <span class="crumb">{{ crumb|default(title) }}</span>
+      <div class="row">
+        {% block topbar_actions %}{% endblock %}
+        <button class="icon-btn" title="Toggle theme" aria-label="Toggle light/dark theme"
+          onclick="(function(){var r=document.documentElement;var n=r.getAttribute('data-theme')==='dark'?'light':'dark';r.setAttribute('data-theme',n);localStorage.setItem('edr-theme',n);})()">◐</button>
+      </div>
+    </header>
+    <main class="page">
+      <header>
+        <h1>{{ title }}</h1>
+        {% block subtitle %}{% endblock %}
+      </header>
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
 </body>
 </html>

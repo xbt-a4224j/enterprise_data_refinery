@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block subtitle %}<p>Every pipeline run and how it ended.</p>{% endblock %}
+{% block content %}
+<div class="card"><div class="bd flush">
+{% if runs %}
+<table>
+  <thead><tr><th>Run</th><th>Pack</th><th>Status</th><th class="num">LLM tokens</th><th class="num">Would-be $</th><th>Started</th></tr></thead>
+  <tbody>
+    {% for r in runs %}
+    <tr>
+      <td><a href="/runs/{{ r.id }}">#{{ r.id }}</a></td>
+      <td>{{ r.pack_name }}</td>
+      <td><span class="badge {{ r.status }}">{{ r.status }}</span></td>
+      <td class="num">{{ r.tokens_in }}/{{ r.tokens_out }}</td>
+      <td class="num">${{ '%.4f'|format(r.cost_usd) }}</td>
+      <td class="muted">{{ r.started_at.strftime('%Y-%m-%d %H:%M') if r.started_at else '—' }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}<div class="empty"><div class="big">No runs yet</div></div>{% endif %}
+</div></div>
+{% endblock %}

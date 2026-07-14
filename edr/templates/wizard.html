@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block subtitle %}<p>Define a new source by example. Upload a sample; the model proposes a schema and checks; you review and save — no code.</p>{% endblock %}
+{% block content %}
+<ol class="grid" style="grid-template-columns:repeat(3,1fr); list-style:none; padding:0; margin:0 0 18px">
+  <li class="tile"><div class="k">Step 1</div><b>Provide a sample</b><div class="sub">Upload a document or paste a URL.</div></li>
+  <li class="tile"><div class="k">Step 2</div><b>Model proposes</b><div class="sub">Schema + draft eval checks, inferred.</div></li>
+  <li class="tile"><div class="k">Step 3</div><b>Review &amp; save</b><div class="sub">Writes packs/&lt;name&gt;/, auto-loaded.</div></li>
+</ol>
+<div class="card"><div class="bd">
+  {% if not admin %}<p class="muted">You need to <a href="/login">sign in</a> to create a pack.</p>{% endif %}
+  <form class="stack" style="max-width:520px" {{ 'hx-post=/wizard/propose hx-target=#proposal' if admin }}>
+    <label class="muted">Pack name</label><input name="name" placeholder="invoices">
+    <label class="muted">Paste a sample document</label>
+    <textarea name="sample" rows="6" style="font:inherit;padding:8px;border:1px solid var(--line-strong);border-radius:7px;background:var(--panel);color:var(--ink)"></textarea>
+    <button class="btn primary" {{ 'disabled' if not admin }}>Propose schema</button>
+  </form>
+  <div id="proposal" style="margin-top:16px"></div>
+</div></div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block subtitle %}<p>Every published record carries provenance. Click a row to see exactly what produced it.</p>{% endblock %}
+{% block content %}
+<form class="row" style="margin-bottom:14px" method="get">
+  <select name="source_id" onchange="this.form.submit()">
+    <option value="">All sources</option>
+    {% for s in sources %}<option value="{{ s.id }}" {{ 'selected' if source_id==s.id }}>{{ s.name }}</option>{% endfor %}
+  </select>
+  <select name="published" onchange="this.form.submit()">
+    <option value="1" {{ 'selected' if published=='1' }}>Published only</option>
+    <option value="0" {{ 'selected' if published=='0' }}>All records</option>
+  </select>
+</form>
+<div class="grid" style="grid-template-columns:1.4fr .9fr; align-items:start">
+  <div class="card"><div class="bd flush">
+  {% if rows %}
+  <table><thead><tr><th>#</th><th>Record</th><th>Passed</th></tr></thead><tbody>
+  {% for r in rows %}
+  <tr style="cursor:pointer" hx-get="/explore/row/{{ r.id }}" hx-target="#prov" hx-swap="innerHTML">
+    <td>{{ r.id }}</td>
+    <td class="mono">{{ r.record.get('permit_id') or r.record.get('id') or (r.record|string)[:48] }}
+      {% if r.low_confidence %}<span class="badge warning" style="margin-left:6px">low-conf</span>{% endif %}</td>
+    <td><span class="badge {{ 'ok' if r.checks_passed else 'plain' }}">{{ 'yes' if r.checks_passed else 'no' }}</span></td>
+  </tr>
+  {% endfor %}
+  </tbody></table>
+  {% else %}<div class="empty"><div class="big">No records</div></div>{% endif %}
+  </div></div>
+  <div class="card"><div class="hd"><h2>Provenance</h2></div><div class="bd" id="prov">
+    <div class="empty">Select a row to inspect its lineage.</div>
+  </div></div>
+</div>
+{% endblock %}

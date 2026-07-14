@@ -1,0 +1,10 @@
+<dl class="kv">
+  <dt>Canonical row</dt><dd>#{{ p.canonical_id }}</dd>
+  <dt>Source</dt><dd>{{ p.source.name if p.source else '—' }} ({{ p.source.pack if p.source else '' }})</dd>
+  <dt>Run</dt><dd>#{{ p.run_id }} · {{ p.run_status }}</dd>
+  <dt>Mapping version</dt><dd>{{ p.mapping_version }}</dd>
+  <dt>Checks passed</dt><dd>{{ p.checks_passed }}</dd>
+</dl>
+<table style="margin-top:10px"><thead><tr><th>Check</th><th>Result</th></tr></thead><tbody>
+{% for c in p.checks %}<tr><td>{{ c.name }}</td><td><span class="badge {{ 'ok' if c.passed else 'failed' }}">{{ 'pass' if c.passed else 'fail' }}</span></td></tr>{% endfor %}
+</tbody></table>

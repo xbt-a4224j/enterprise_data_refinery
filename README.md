@@ -33,6 +33,21 @@ flowchart LR
 
 Rich diagrams: [`docs/architecture.html`](docs/architecture.html).
 
+## The admin surface
+
+Server-rendered (FastAPI + HTMX, no JS build) — every screen is diagnosable, not a black box.
+
+![Overview — gate pass rate, open drift events, canonical rows, and $0-local vs. would-be-Claude cost.](docs/screenshots/overview.png)
+
+The **gate-failure browser** shows every drop the trust layer refused to publish — with the exact check that failed and the offending rows — and the **explorer** shows the full provenance behind any published record (source, run, mapping version, and every check it passed):
+
+<table>
+<tr>
+<td width="50%"><img src="docs/screenshots/gate.png" alt="Gate failures: quarantined drops with the failing check and offending rows"></td>
+<td width="50%"><img src="docs/screenshots/explorer.png" alt="Explorer: a published record's provenance — source, run, mapping version, and checks"></td>
+</tr>
+</table>
+
 ## Evaluation
 
 Reproducible numbers from `eval/run_eval.py` over a labeled dataset of **24 building-permit
